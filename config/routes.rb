@@ -1,4 +1,9 @@
 Rails.application.routes.draw do
+  resources :cleaning_assignments
+  resources :teams
+  resources :businesses
+  resource :session
+  resources :passwords, param: :token
   resources :tasks
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

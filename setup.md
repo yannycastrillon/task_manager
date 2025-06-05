@@ -406,7 +406,7 @@ module Api
       skip_before_action :authenticate_request, only: :login
 
       def login
-        user = User.find_by(email_address: params[:email_address])
+        user = User.find_by(email: params[:email])
         
         if user && user.authenticate(params[:password])
           token = generate_jwt_token(user.id)

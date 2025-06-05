@@ -1,9 +1,15 @@
 class TasksController < ApplicationController
   before_action :set_task, only: %i[ show edit update destroy ]
+  allow_unauthenticated_access only: %i[ index ]
 
   # GET /tasks or /tasks.json
   def index
-    @tasks = Task.all
+    tasks = Task.all.group_by(&:status)
+
+    @not_started_tasks = tasks.fetch("not_started", [])
+    @completed_tasks = tasks.fetch("completed", [])
+    @cancelled_tasks = tasks.fetch("cancelled", [])
+    @in_progress_tasks = tasks.fetch("in_progress", [])
   end
 
   # GET /tasks/1 or /tasks/1.json
