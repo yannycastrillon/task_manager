@@ -95,6 +95,9 @@ GEM
       reline (>= 0.3.8)
     diff-lcs (1.6.2)
     dotenv (3.1.8)
+    dotenv-rails (3.1.8)
+      dotenv (= 3.1.8)
+      railties (>= 6.1)
     drb (2.2.3)
     ed25519 (1.4.0)
     erb (5.0.1)
@@ -106,6 +109,8 @@ GEM
     factory_bot_rails (6.4.4)
       factory_bot (~> 6.5)
       railties (>= 5.0.0)
+    faker (3.5.1)
+      i18n (>= 1.8.11, < 2)
     ffi (1.17.2-arm64-darwin)
     formatador (1.1.0)
     fugit (1.11.1)
@@ -388,7 +393,9 @@ DEPENDENCIES
   bootsnap
   brakeman
   debug
+  dotenv-rails
   factory_bot_rails (~> 6.4)
+  faker
   guard (~> 2.18)
   guard-rspec (~> 4.7)
   importmap-rails
