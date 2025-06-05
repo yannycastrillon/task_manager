@@ -1,0 +1,25 @@
+<%# 
+  Usage:
+  <%= render "shared/badge", text: "Team Lead", color: "orange" %>
+  <%# <%= render "shared/badge", text: "Member", color: "gray" %>
+  <%# <%= render "shared/badge", text: "Admin", color: "red" %>
+  <%# <%= render "shared/badge", text: "Active", color: "green" %>
+
+<%# _badge.html.erb - Displays the user's role in a styled badge %>
+<% 
+  # Define badge colors based on role
+  badge_color_class = case role.downcase
+                      when 'admin'
+                        'bg-red-100 text-red-800'
+                      when 'team lead'
+                        'bg-blue-100 text-blue-800'
+                      when 'member'
+                        'bg-green-100 text-green-800'
+                      else
+                        'bg-gray-100 text-gray-800'
+                      end
+%>
+
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= badge_color_class %>">
+  <%= role %>
+</span> 

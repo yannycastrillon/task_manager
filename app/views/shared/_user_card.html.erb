@@ -1,0 +1,51 @@
+<%# 
+  Usage:
+  <%= render "shared/user_card", user: user, team: team %>
+
+<%# _user_card.html.erb - Displays user information with a role badge in the top right corner %>
+<div class="relative bg-white rounded-lg shadow-md p-6 border border-gray-200">
+  <%# Position the badge in the top right corner %>
+  <div class="absolute top-4 right-4">
+    <% if team.persisted? && team.team_memberships.exists?(user_id: user.id) %>
+      <% membership = team.team_memberships.find_by(user_id: user.id) %>
+      <%= render "shared/badge", role: membership.role.titleize %>
+    <% end %>
+  </div>
+
+  <%# User information %>
+  <div class="flex items-start space-x-4">
+    <%# User avatar/icon %>
+    <div class="flex-shrink-0">
+      <div class="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
+        <%= user.full_name.split.map(&:first).join[0..1].upcase %>
+      </div>
+    </div>
+
+    <%# User details %>
+    <div class="flex-1 min-w-0">
+      <h3 class="text-lg font-medium text-gray-900 truncate">
+        <%= user.full_name %>
+      </h3>
+      <p class="text-sm text-gray-500 truncate">
+        <%= user.email %>
+      </p>
+
+      <%# Additional user information %>
+      <div class="mt-2 flex items-center text-sm text-gray-500">
+        <% if defined?(user.last_login) && user.last_login.present? %>
+          <span>Last login: <%= user.last_login.strftime("%b %d, %Y") %></span>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <%# Checkbox for team membership selection %>
+  <% if local_assigns[:show_checkbox] %>
+    <div class="mt-4 flex justify-end">
+      <%= check_box_tag "team[user_ids][]",
+          user.id, 
+          team.users.include?(user),
+          class: "focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded" %>
+    </div>
+  <% end %>
+</div> 

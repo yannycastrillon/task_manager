@@ -1,9 +1,10 @@
 class TeamsController < ApplicationController
   before_action :set_team, only: %i[ show edit update destroy ]
+  before_action :set_users, only: %i[ new edit create update ]
 
   # GET /teams or /teams.json
   def index
-    @teams = Team.all
+    @teams = Team.includes(:team_memberships).all
   end
 
   # GET /teams/1 or /teams/1.json
@@ -49,10 +50,10 @@ class TeamsController < ApplicationController
 
   # DELETE /teams/1 or /teams/1.json
   def destroy
-    @team.destroy!
+    @team.destroy
 
     respond_to do |format|
-      format.html { redirect_to teams_path, status: :see_other, notice: "Team was successfully destroyed." }
+      format.html { redirect_to teams_path, notice: "Team was successfully destroyed." }
       format.json { head :no_content }
     end
   end
@@ -60,11 +61,19 @@ class TeamsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_team
-      @team = Team.find(params.expect(:id))
+      @team = Team.includes(:team_memberships).find(params[:id])
+    end
+
+    def set_users
+      @users = User.all.order(:first_name, :last_name)
     end
 
     # Only allow a list of trusted parameters through.
     def team_params
-      params.fetch(:team, {})
+      params.require(:team).permit(
+        :name,
+        :description,
+        user_ids: []
+      )
     end
 end
