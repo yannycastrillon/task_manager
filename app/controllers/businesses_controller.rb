@@ -1,9 +1,27 @@
 class BusinessesController < ApplicationController
-  before_action :set_business, only: %i[ show edit update ]
+  before_action :set_business, only: %i[ show edit update destroy ]
 
   # GET /businesses or /businesses.json
   def index
-    @businesses = Business.all
+    businesses = Business.all
+
+    if params[:search].present?
+      businesses = businesses.where("name ILIKE ? OR email ILIKE ? OR phone ILIKE ? OR address ILIKE ?",
+        "%#{params[:search]}%", "%#{params[:search]}%", "%#{params[:search]}%", "%#{params[:search]}%")
+    end
+
+    if params[:status].present?
+      businesses = businesses.where(status: params[:status])
+    end
+
+    businesses = businesses.group_by(&:status)
+    @active_businesses = businesses.fetch("active", [])
+    @inactive_businesses = businesses.fetch("inactive", [])
+
+    respond_to do |format|
+      format.html
+      format.turbo_stream
+    end
   end
 
   # GET /businesses/1 or /businesses/1.json
@@ -23,38 +41,35 @@ class BusinessesController < ApplicationController
   def create
     @business = Business.new(business_params)
 
-    respond_to do |format|
-      if @business.save
-        format.html { redirect_to @business, notice: "Business was successfully created." }
-        format.json { render :show, status: :created, location: @business }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @business.errors, status: :unprocessable_entity }
-      end
+    if @business.save
+      redirect_to @business, notice: "Business was successfully created."
+    else
+      render :new, status: :unprocessable_entity
     end
   end
 
   # PATCH/PUT /businesses/1 or /businesses/1.json
   def update
-    respond_to do |format|
-      if @business.update(business_params)
-        format.html { redirect_to @business, notice: "Business was successfully updated." }
-        format.json { render :show, status: :ok, location: @business }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @business.errors, status: :unprocessable_entity }
-      end
+    if @business.update(business_params)
+      redirect_to @business, notice: "Business was successfully updated."
+    else
+      render :edit, status: :unprocessable_entity
     end
+  end
+
+  def destroy
+    @business.destroy
+    redirect_to businesses_url, notice: "Business was successfully destroyed."
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_business
-      @business = Business.find(params.expect(:id))
+      @business = Business.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def business_params
-      params.fetch(:business, {})
+      params.require(:business).permit(:name, :address, :phone, :email, :notes, :status)
     end
 end
