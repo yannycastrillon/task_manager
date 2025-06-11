@@ -1,9 +1,9 @@
 class Business < ApplicationRecord
   # Associations
-  has_many :teams, dependent: :destroy
-  has_many :tasks, dependent: :destroy
-  has_many :cleaning_assignments, through: :teams
+  has_many :cleaning_assignments, dependent: :destroy
+  has_many :teams, through: :cleaning_assignments
   has_many :users, through: :cleaning_assignments
+  has_many :tasks, dependent: :destroy
 
   # Validations
   validates :name, presence: true
@@ -12,4 +12,8 @@ class Business < ApplicationRecord
   # Scopes
   scope :active, -> { where(status: :active) }
   scope :inactive, -> { where(status: :inactive) }
+
+  def website
+    "https://#{name.downcase.gsub(" ", "-")}.com"
+  end
 end

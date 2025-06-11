@@ -1,7 +1,9 @@
 Rails.application.routes.draw do
   resources :cleaning_assignments
   resources :teams
-  resources :businesses
+  resources :businesses do
+    resources :tasks
+  end
   resource :session
   resources :passwords, param: :token
   resources :tasks

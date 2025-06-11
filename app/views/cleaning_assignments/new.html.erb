@@ -1,9 +1,20 @@
 <% content_for :title, "New cleaning assignment" %>
 
-<div class="md:w-2/3 w-full">
-  <h1 class="font-bold text-4xl">New cleaning assignment</h1>
+<div class="px-4 sm:px-6 lg:px-8">
+  <div class="sm:flex sm:items-center">
+    <div class="sm:flex-auto">
+      <div class="flex items-center">
+        <%= link_to cleaning_assignments_path, class: "mr-4 text-gray-400 hover:text-gray-500" do %>
+          <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+        <% end %>
+        <h1 class="text-xl font-semibold text-gray-900">New Cleaning Assignment</h1>
+      </div>
+    </div>
+  </div>
 
-  <%= render "form", cleaning_assignment: @cleaning_assignment %>
-
-  <%= link_to "Back to cleaning assignments", cleaning_assignments_path, class: "w-full sm:w-auto text-center mt-2 sm:mt-0 sm:ml-2 rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
+  <div class="mt-8">
+    <%= render "form", cleaning_assignment: @cleaning_assignment %>
+  </div>
 </div>

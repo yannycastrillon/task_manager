@@ -1,9 +1,9 @@
-<%= form_with(model: task, class: "space-y-8 divide-y divide-gray-200") do |form| %>
+<%= form_with(model: task, class: "space-y-6") do |form| %>
   <% if task.errors.any? %>
     <div class="rounded-md bg-red-50 p-4 mb-6">
       <div class="flex">
         <div class="flex-shrink-0">
-          <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+          <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
           </svg>
         </div>
@@ -12,7 +12,7 @@
             <%= pluralize(task.errors.count, "error") %> prohibited this task from being saved:
           </h3>
           <div class="mt-2 text-sm text-red-700">
-            <ul role="list" class="list-disc pl-5 space-y-1">
+            <ul class="list-disc pl-5 space-y-1">
               <% task.errors.full_messages.each do |message| %>
                 <li><%= message %></li>
               <% end %>
@@ -23,63 +23,74 @@
     </div>
   <% end %>
 
-  <div class="space-y-8 divide-y divide-gray-200">
-    <div class="pt-8">
-      <div>
-        <h3 class="text-lg leading-6 font-medium text-gray-900">Task Information</h3>
-        <p class="mt-1 text-sm text-gray-600">This information will be displayed publicly so be careful what you share.</p>
+  <div class="space-y-6">
+    <div>
+      <%= form.label :title, class: "block text-base font-medium text-gray-700 mb-2" %>
+      <div class="mt-1">
+        <%= form.text_field :title, 
+            class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base py-3 px-4" %>
       </div>
+    </div>
 
-      <div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-        <div class="sm:col-span-4">
-          <%= form.label :name, class: "block text-sm font-medium text-gray-700" %>
-          <div class="mt-1">
-            <%= form.text_field :name, class: "shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md transition-colors duration-200" %>
-          </div>
-        </div>
+    <div>
+      <%= form.label :business_id, class: "block text-base font-medium text-gray-700 mb-2" %>
+      <div class="mt-1">
+        <%= form.collection_select :business_id, Business.all, :id, :name, 
+            { prompt: "Select a business" }, 
+            { class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base py-3 px-4" } %>
+      </div>
+    </div>
 
-        <div class="sm:col-span-6">
-          <%= form.label :description, class: "block text-sm font-medium text-gray-700" %>
-          <div class="mt-1">
-            <%= form.text_area :description, rows: 3, class: "shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md transition-colors duration-200" %>
-          </div>
-          <p class="mt-2 text-sm text-gray-600">Write a few sentences about the task.</p>
-        </div>
+    <div>
+      <%= form.label :team_id, class: "block text-base font-medium text-gray-700 mb-2" %>
+      <div class="mt-1">
+        <%= form.collection_select :team_id, Team.all, :id, :name, 
+            { prompt: "Select a team" }, 
+            { class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base py-3 px-4" } %>
+      </div>
+    </div>
 
-        <div class="sm:col-span-3">
-          <%= form.label :priority, class: "block text-sm font-medium text-gray-700" %>
-          <div class="mt-1">
-            <%= form.select :priority, 
-                options_for_select([['Low', 'low'], ['Medium', 'medium'], ['High', 'high']], task.priority),
-                {},
-                class: "shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md transition-colors duration-200" %>
-          </div>
-        </div>
+    <div>
+      <%= form.label :due_date, class: "block text-base font-medium text-gray-700 mb-2" %>
+      <div class="mt-1">
+        <%= form.date_field :due_date, 
+            class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base py-3 px-4" %>
+      </div>
+    </div>
 
-        <div class="sm:col-span-3">
-          <%= form.label :status, class: "block text-sm font-medium text-gray-700" %>
-          <div class="mt-1">
-            <%= form.select :status,
-                options_for_select([['Not Started', 'not_started'], ['In Progress', 'in_progress'], ['Completed', 'completed']], task.status),
-                {},
-                class: "shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md transition-colors duration-200" %>
-          </div>
-        </div>
+    <div>
+      <%= form.label :status, class: "block text-base font-medium text-gray-700 mb-2" %>
+      <div class="mt-1">
+        <%= form.select :status, 
+            Task.statuses.keys.map { |s| [s.titleize, s] }, 
+            { prompt: "Select status" }, 
+            { class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base py-3 px-4" } %>
+      </div>
+    </div>
 
-        <div class="sm:col-span-3">
-          <%= form.label :due_date, class: "block text-sm font-medium text-gray-700" %>
-          <div class="mt-1">
-            <%= form.date_field :due_date, class: "shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md transition-colors duration-200" %>
-          </div>
-        </div>
+    <div>
+      <%= form.label :priority, class: "block text-base font-medium text-gray-700 mb-2" %>
+      <div class="mt-1">
+        <%= form.select :priority, 
+            Task.priorities.keys.map { |p| [p.titleize, p] }, 
+            { prompt: "Select priority" }, 
+            { class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base py-3 px-4" } %>
+      </div>
+    </div>
+
+    <div>
+      <%= form.label :description, class: "block text-base font-medium text-gray-700 mb-2" %>
+      <div class="mt-1">
+        <%= form.text_area :description, 
+            class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base py-3 px-4 min-h-[120px]" %>
       </div>
     </div>
   </div>
 
-  <div class="pt-5">
-    <div class="flex justify-end">
-      <%= link_to "Cancel", tasks_path, class: "bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200" %>
-      <%= form.submit class: "ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200" %>
+  <div class="pt-8">
+    <div class="flex justify-end space-x-4">
+      <%= link_to "Cancel", tasks_path, class: "rounded-md border border-gray-300 bg-white py-3 px-6 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" %>
+      <%= form.submit class: "inline-flex justify-center rounded-md border border-transparent bg-blue-600 py-3 px-6 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" %>
     </div>
   </div>
 <% end %>

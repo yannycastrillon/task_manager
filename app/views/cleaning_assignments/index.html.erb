@@ -1,29 +1,99 @@
-<% content_for :title, "Cleaning assignments" %>
+<% content_for :title, "Cleaning Assignments" %>
 
-<div class="w-full">
-  <% if notice.present? %>
-    <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-md inline-block" id="notice"><%= notice %></p>
-  <% end %>
-
-  <div class="flex justify-between items-center">
-    <h1 class="font-bold text-4xl">Cleaning assignments</h1>
-    <%= link_to "New cleaning assignment", new_cleaning_assignment_path, class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white block font-medium" %>
-  </div>
-
-  <div id="cleaning_assignments" class="min-w-full divide-y divide-gray-200 space-y-5">
-    <% if @cleaning_assignments.any? %>
-      <% @cleaning_assignments.each do |cleaning_assignment| %>
-        <div class="flex flex-col sm:flex-row justify-between items-center pb-5 sm:pb-0">
-          <%= render cleaning_assignment %>
-          <div class="w-full sm:w-auto flex flex-col sm:flex-row space-x-2 space-y-2">
-            <%= link_to "Show", cleaning_assignment, class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-            <%= link_to "Edit", edit_cleaning_assignment_path(cleaning_assignment), class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-            <%= button_to "Destroy", cleaning_assignment, method: :delete, class: "w-full sm:w-auto rounded-md px-3.5 py-2.5 text-white bg-red-600 hover:bg-red-500 font-medium cursor-pointer", data: { turbo_confirm: "Are you sure?" } %>
+<div class="min-h-screen bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+    <div class="bg-gray-800 rounded-2xl shadow-2xl border border-gray-700 overflow-hidden">
+      <%# Header Section %>
+      <div class="bg-gradient-to-r from-gray-900 via-slate-900 to-gray-900 px-6 sm:px-8 py-8 sm:py-12 text-center relative">
+        <div class="absolute inset-0 bg-gradient-to-r from-blue-600/10 via-transparent to-blue-600/10"></div>
+        <div class="relative">
+          <div class="flex justify-center mb-4">
+            <div class="bg-blue-600/20 backdrop-blur-sm rounded-full p-4 border border-blue-500/30">
+              <svg class="w-8 sm:w-10 h-8 sm:h-10 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path fill-rule="evenodd" d="M9.528 1.718a.75.75 0 01.127.514v3.193l-.433.914a18.91 18.91 0 00-4.478 3.51c-.81.693-1.677 1.416-2.583 2.112A3.25 3.25 0 002 16.25c0 .695.143 1.36.398 1.968l.43-.314V21a.75.75 0 01-1.5 0v-3.75h-.75a.75.75 0 010-1.5H3v-3.75A7.502 7.502 0 0110.025 2.29l.127-.514zM12 2.25a.75.75 0 01.75.75v6.345l1.637 1.045a18.583 18.583 0 004.478 3.51c.81.693 1.677 1.416 2.583 2.112a3.25 3.25 0 01.398 1.968l-.43-.314V21a.75.75 0 01-1.5 0v-3.75h-.75a.75.75 0 010-1.5H19v-3.75A7.502 7.502 0 0112 2.25z" clip-rule="evenodd" />
+              </svg>
+            </div>
           </div>
+          <h1 class="text-2xl sm:text-4xl font-bold text-white mb-2">
+            Cleaning Assignments
+          </h1>
+          <div class="w-24 h-1 bg-blue-600 mx-auto rounded-full"></div>
+          <p class="text-gray-400 text-sm mt-4">A list of all cleaning assignments in your account.</p>
         </div>
-      <% end %>
-    <% else %>
-      <p class="text-center my-10">No cleaning assignments found.</p>
-    <% end %>
+      </div>
+
+      <%# Main Content %>
+      <div class="p-6 sm:p-8 bg-gray-800">
+        <% if notice.present? %>
+          <div class="rounded-md bg-green-50 p-4 mb-6">
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+              </div>
+              <div class="ml-3">
+                <p class="text-sm font-medium text-green-800" id="notice"><%= notice %></p>
+              </div>
+            </div>
+          </div>
+        <% end %>
+
+        <%# New Cleaning Assignment Button %>
+        <div class="flex justify-end mb-8">
+          <%= link_to new_cleaning_assignment_path, class: "inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200" do %>
+            <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+            </svg>
+            New Cleaning Assignment
+          <% end %>
+        </div>
+
+        <div class="space-y-8">
+          <% if @cleaning_assignments.any? %>
+            <% @cleaning_assignments.group_by(&:team).each do |team, assignments| %>
+              <%= link_to team_path(team), class: "" do %>
+                <div class="bg-gray-700 rounded-xl border border-gray-600 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5">
+                  <div class="px-6 py-4 border-b border-gray-600">
+                    <div class="flex items-center justify-between">
+                      <div class="flex items-center">
+                        <h2 class="text-lg font-semibold text-white"><%= team.name %></h2>
+                        <span class="ml-3 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-500/20 text-blue-400 border border-blue-500/30">
+                          <%= pluralize(assignments.count, 'assignment') %>
+                        </span>
+                      </div>
+                      <svg class="h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+              <div class="bg-gray-700 rounded-xl border border-gray-600 shadow-lg p-6">
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                  <%= render partial: "cleaning_assignment", collection: assignments, as: :cleaning_assignment %>
+                </div>
+              </div>
+            <% end %>
+          <% else %>
+            <div class="text-center py-12 bg-gray-700 rounded-lg border border-gray-600">
+              <svg class="mx-auto h-12 w-12 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              </svg>
+              <h3 class="mt-2 text-sm font-medium text-white">No cleaning assignments</h3>
+              <p class="mt-1 text-sm text-gray-400">Get started by creating a new cleaning assignment.</p>
+              <div class="mt-6">
+                <%= link_to new_cleaning_assignment_path, class: "inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200" do %>
+                  <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                  </svg>
+                  New Cleaning Assignment
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

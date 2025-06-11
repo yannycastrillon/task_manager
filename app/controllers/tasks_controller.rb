@@ -1,10 +1,11 @@
 class TasksController < ApplicationController
   before_action :set_task, only: %i[ show edit update destroy ]
-  allow_unauthenticated_access only: %i[ index ]
+  allow_unauthenticated_access only: %i[ index edit new create ]
 
   # GET /tasks or /tasks.json
   def index
-    tasks = Task.all.group_by(&:status)
+    task_service = TaskService.new(resource_id: params[:business_id] || params[:team_id], resource_type: resource_type)
+    tasks = task_service.grouped_tasks
 
     @not_started_tasks = tasks.fetch("not_started", [])
     @completed_tasks = tasks.fetch("completed", [])
@@ -71,6 +72,10 @@ class TasksController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def task_params
-      params.expect(task: [ :name, :description, :priority, :status, :due_date ])
+      params.expect(task: [ :title, :description, :priority, :status, :due_date, :business_id, :team_id, :assigned_to_id ])
+    end
+
+    def resource_type
+      params[:business_id].present? ? :business : :team
     end
 end

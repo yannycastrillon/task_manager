@@ -13,8 +13,8 @@ class Task < ApplicationRecord
   STATUSES = [ NOT_STARTED, IN_PROGRESS, COMPLETED, CANCELLED ].freeze
 
   # Associations
-  belongs_to :business
   belongs_to :team
+  belongs_to :business
   belongs_to :assigned_to, class_name: "User", optional: true
 
   # Validations
@@ -34,4 +34,5 @@ class Task < ApplicationRecord
   scope :due_today, -> { where(due_date: Date.current) }
   scope :overdue, -> { where("due_date < ?", Date.current).where.not(status: :completed) }
   scope :upcoming, -> { where("due_date > ?", Date.current) }
+  scope :in_progress, -> { where.not(status: :in_progress) }
 end

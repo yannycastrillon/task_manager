@@ -3,11 +3,14 @@ class CleaningAssignmentsController < ApplicationController
 
   # GET /cleaning_assignments or /cleaning_assignments.json
   def index
-    @cleaning_assignments = CleaningAssignment.all
+    @cleaning_assignments = CleaningAssignment.includes(:business, :team)
+                                              .order(scheduled_date: :asc)
   end
 
   # GET /cleaning_assignments/1 or /cleaning_assignments/1.json
   def show
+    @business_tasks = @cleaning_assignment.business.tasks.includes(:team, :assigned_to)
+    @team_tasks = @cleaning_assignment.team.tasks.includes(:business, :assigned_to)
   end
 
   # GET /cleaning_assignments/new
@@ -17,6 +20,8 @@ class CleaningAssignmentsController < ApplicationController
 
   # GET /cleaning_assignments/1/edit
   def edit
+    @business_tasks = @cleaning_assignment.business.tasks.includes(:team, :assigned_to)
+    @team_tasks = @cleaning_assignment.team.tasks.includes(:business, :assigned_to)
   end
 
   # POST /cleaning_assignments or /cleaning_assignments.json
@@ -60,11 +65,33 @@ class CleaningAssignmentsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_cleaning_assignment
-      @cleaning_assignment = CleaningAssignment.find(params.expect(:id))
+      @cleaning_assignment = CleaningAssignment.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def cleaning_assignment_params
-      params.fetch(:cleaning_assignment, {})
+      params.require(:cleaning_assignment).permit(
+        :business_id,
+        :team_id,
+        :scheduled_date,
+        :started_at,
+        :completed_at,
+        :estimated_duration_minutes,
+        :actual_duration_minutes,
+        :notes,
+        :special_instructions,
+        :number_of_windows,
+        :number_of_floors,
+        :requires_special_equipment,
+        :requires_insurance_verification,
+        :status,
+        :price,
+        :payment_status,
+        :last_cleaned_at,
+        :cleaning_frequency_days,
+        :is_recurring,
+        :recurrence_pattern,
+        :recurrence_end_date
+      )
     end
 end
