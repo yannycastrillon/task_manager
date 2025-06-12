@@ -121,4 +121,35 @@
       </div>
     </div>
   <% end %>
+</div>
+
+<%# Related Tasks Section %>
+<div class="mb-10">
+  <div class="flex items-center justify-between mb-6">
+    <h2 class="text-xl sm:text-2xl font-semibold text-white">
+      Related Tasks
+    </h2>
+  </div>
+  
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+    <%# Business Tasks %>
+    <div class="bg-gradient-to-br from-gray-700 to-gray-800 p-6 rounded-xl border border-gray-600">
+      <h3 class="font-semibold text-white mb-4">Business Tasks (<%= business_tasks.count %>)</h3>
+      <div class="space-y-4">
+        <% business_tasks.each do |task| %>
+          <%= render "shared/task", task: task %>
+        <% end %>
+      </div>
+    </div>
+
+    <%# Team Tasks %>
+    <div class="bg-gradient-to-br from-gray-700 to-gray-800 p-6 rounded-xl border border-gray-600">
+      <h3 class="font-semibold text-white mb-4">Team Tasks (<%= team_tasks.count %>)</h3>
+      <div class="space-y-4">
+        <% team_tasks.each do |task| %>
+          <%= render "shared/task", task: task %>
+        <% end %>
+      </div>
+    </div>
+  </div>
 </div> 

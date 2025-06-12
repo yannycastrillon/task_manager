@@ -1,7 +1,7 @@
 <% if @active_businesses.any? || @inactive_businesses.any? %>
   <% if @active_businesses.any? %>
     <div class="space-y-4">
-      <h2 class="text-xl font-semibold text-gray-900">Active Businesses</h2>
+      <h2 class="text-xl font-semibold text-white">Active Businesses</h2>
       <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         <%= render partial: "business", collection: @active_businesses, as: :business %>
       </div>
@@ -10,7 +10,7 @@
 
   <% if @inactive_businesses.any? %>
     <div class="space-y-4">
-      <h2 class="text-xl font-semibold text-gray-900">Inactive Businesses</h2>
+      <h2 class="text-xl font-semibold text-white">Inactive Businesses</h2>
       <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         <%= render partial: "business", collection: @inactive_businesses, as: :business %>
       </div>
