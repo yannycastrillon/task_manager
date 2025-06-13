@@ -1,4 +1,4 @@
-<%= form_with(model: task, class: "space-y-6 bg-gray-800 p-8 rounded-xl shadow-xl border border-gray-700") do |form| %>
+<%= form_with(model: [@parent, task], class: "space-y-6 bg-gray-800 p-8 rounded-xl shadow-xl border border-gray-700") do |form| %>
   <% if task.errors.any? %>
     <div class="rounded-md bg-red-50 p-4 mb-6">
       <div class="flex">
@@ -33,20 +33,10 @@
     </div>
 
     <div>
-      <%= form.label :business_id, class: "block text-base font-medium text-gray-300 mb-2" %>
+      <%= form.label :description, class: "block text-base font-medium text-gray-300 mb-2" %>
       <div class="mt-1">
-        <%= form.collection_select :business_id, Business.all, :id, :name, 
-            { prompt: "Select a business" }, 
-            { class: "block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base py-3 px-4" } %>
-      </div>
-    </div>
-
-    <div>
-      <%= form.label :team_id, class: "block text-base font-medium text-gray-300 mb-2" %>
-      <div class="mt-1">
-        <%= form.collection_select :team_id, Team.all, :id, :name, 
-            { prompt: "Select a team" }, 
-            { class: "block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base py-3 px-4" } %>
+        <%= form.text_area :description,
+            class: "block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base py-3 px-4 min-h-[120px]" %>
       </div>
     </div>
 
@@ -58,38 +48,88 @@
       </div>
     </div>
 
+    <div class="flex gap-4">
+      <div class="flex-1">
+        <%= form.label :status, class: "block text-base font-medium text-gray-300 mb-2" %>
+        <div class="mt-1">
+          <%= form.select :status, 
+              Task.statuses.keys.map { |s| [s.titleize, s] }, 
+              { prompt: "Select status" }, 
+              { class: "block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base py-3 px-4" } %>
+        </div>
+      </div>
+
+      <div class="flex-1">
+        <%= form.label :priority, class: "block text-base font-medium text-gray-300 mb-2" %>
+        <div class="mt-1">
+          <%= form.select :priority, 
+              Task.priorities.keys.map { |p| [p.titleize, p] }, 
+              { prompt: "Select priority" }, 
+              { class: "block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base py-3 px-4" } %>
+        </div>
+      </div>
+    </div>
+
     <div>
-      <%= form.label :status, class: "block text-base font-medium text-gray-300 mb-2" %>
+      <%= form.label :business_id, class: "block text-base font-medium text-gray-300 mb-2" %>
       <div class="mt-1">
-        <%= form.select :status, 
-            Task.statuses.keys.map { |s| [s.titleize, s] }, 
-            { prompt: "Select status" }, 
+        <%= form.collection_select :business_id, Business.all, :id, :name, 
+            { prompt: "Select a business", selected: params[:business_id] }, 
             { class: "block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base py-3 px-4" } %>
       </div>
     </div>
 
     <div>
-      <%= form.label :priority, class: "block text-base font-medium text-gray-300 mb-2" %>
+      <%= form.label :team_id, class: "block text-base font-medium text-gray-300 mb-2" %>
       <div class="mt-1">
-        <%= form.select :priority, 
-            Task.priorities.keys.map { |p| [p.titleize, p] }, 
-            { prompt: "Select priority" }, 
+        <%= form.collection_select :team_id, Team.all, :id, :name, 
+            { prompt: "Select a team", selected: params[:team_id] }, 
             { class: "block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base py-3 px-4" } %>
       </div>
     </div>
 
     <div>
-      <%= form.label :description, class: "block text-base font-medium text-gray-300 mb-2" %>
+      <%= form.label :started_at, class: "block text-base font-medium text-gray-300 mb-2" %>
       <div class="mt-1">
-        <%= form.text_area :description, 
-            class: "block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base py-3 px-4 min-h-[120px]" %>
+        <%= form.datetime_local_field :started_at,
+            class: "block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base py-3 px-4" %>
+      </div>
+    </div>
+
+    <div>
+      <%= form.label :completed_at, class: "block text-base font-medium text-gray-300 mb-2" %>
+      <div class="mt-1">
+        <%= form.datetime_local_field :completed_at,
+            class: "block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base py-3 px-4" %>
+      </div>
+    </div>
+
+    <div>
+      <%= form.label :how_long_it_took, class: "block text-base font-medium text-gray-300 mb-2" %>
+      <div class="mt-1 p-3 px-4 w-full rounded-md border border-gray-600 bg-gray-700 text-white shadow-sm pointer-events-none opacity-70">
+        <% if task.completed_at && task.started_at %>
+          <%= distance_of_time_in_words(task.started_at, task.completed_at) %>
+        <% else %>
+          Not available
+        <% end %>
       </div>
     </div>
   </div>
 
   <div class="pt-8">
     <div class="flex justify-end space-x-4">
-      <%= link_to "Cancel", tasks_path, class: "rounded-md border border-gray-600 bg-gray-700 py-3 px-6 text-base font-medium text-gray-300 shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800" %>
+      <%
+        return_path = if params[:business_id].present?
+          business_tasks_path(params[:business_id])
+        elsif params[:team_id].present?
+          team_tasks_path(params[:team_id])
+        elsif task.business_id.present?
+          business_tasks_path(task.business_id)
+        elsif task.team_id.present?
+          team_tasks_path(task.team_id)
+        end
+      %>
+      <%= link_to "Cancel", return_path, class: "rounded-md border border-gray-600 bg-gray-700 py-3 px-6 text-base font-medium text-gray-300 shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800" %>
       <%= form.submit class: "inline-flex justify-center rounded-md border border-transparent bg-blue-600 py-3 px-6 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800" %>
     </div>
   </div>

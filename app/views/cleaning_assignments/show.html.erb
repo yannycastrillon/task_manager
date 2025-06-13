@@ -168,7 +168,7 @@
               <h3 class="font-semibold text-white mb-4">Business Tasks</h3>
               <div class="space-y-4">
                 <% @business_tasks.each do |task| %>
-                  <%= render "shared/task", task: task %>
+                  <%= render "shared/task", task: task, parent: task.business %>
                 <% end %>
               </div>
             </div>
@@ -178,7 +178,7 @@
               <h3 class="font-semibold text-white mb-4">Team Tasks</h3>
               <div class="space-y-4">
                 <% @team_tasks.each do |task| %>
-                  <%= render "shared/task", task: task %>
+                  <%= render "shared/task", task: task, parent: task.team %>
                 <% end %>
               </div>
             </div>

@@ -5,19 +5,11 @@
 # for a given business_id or team_id resource.
 
 class TaskService
-  def initialize(resource_id:, resource_type:)
-    @resource_id = resource_id # ID of the business or team
-    @resource_type = resource_type # Type of resource, either :business or :team
+  def initialize(resource:)
+    @resource = resource # The Business or Team object
   end
 
   def grouped_tasks
-    case @resource_type
-    when :business
-      Task.where(business_id: @resource_id).group_by(&:status)
-    when :team
-      Task.where(team_id: @resource_id).group_by(&:status)
-    else
-      raise ArgumentError, "Invalid resource type: #{@resource_type}"
-    end
+    @resource.tasks.group_by(&:status)
   end
 end

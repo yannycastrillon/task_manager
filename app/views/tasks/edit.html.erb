@@ -24,8 +24,8 @@
     <%= render "form", task: @task %>
 
     <div class="mt-8 flex justify-center space-x-4">
-      <%= link_to "Show Task", @task, class: "rounded-md border border-gray-600 bg-gray-700 py-3 px-6 text-base font-medium text-gray-300 shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800" %>
-      <%= link_to "Back to Tasks", tasks_path, class: "rounded-md border border-gray-600 bg-gray-700 py-3 px-6 text-base font-medium text-gray-300 shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800" %>
+      <%= link_to "Show Task", [@parent, @task], class: "rounded-md border border-gray-600 bg-gray-700 py-3 px-6 text-base font-medium text-gray-300 shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800" %>
+      <%= link_to "Back to Tasks", polymorphic_path([@parent, :tasks]), class: "rounded-md border border-gray-600 bg-gray-700 py-3 px-6 text-base font-medium text-gray-300 shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800" %>
     </div>
   </div>
 </div>
