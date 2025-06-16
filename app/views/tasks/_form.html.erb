@@ -1,4 +1,4 @@
-<%= form_with(model: [@parent, task], class: "space-y-6 bg-gray-800 p-8 rounded-xl shadow-xl border border-gray-700") do |form| %>
+<%= form_with(model: [@parent, task], class: "space-y-6 bg-gray-800 p-8 rounded-xl shadow-xl border border-gray-700", data: { controller: "team-members" }) do |form| %>
   <% if task.errors.any? %>
     <div class="rounded-md bg-red-50 p-4 mb-6">
       <div class="flex">
@@ -73,8 +73,8 @@
     <div>
       <%= form.label :business_id, class: "block text-base font-medium text-gray-300 mb-2" %>
       <div class="mt-1">
-        <%= form.collection_select :business_id, Business.all, :id, :name, 
-            { prompt: "Select a business", selected: params[:business_id] }, 
+        <%= form.collection_select :business_id, Business.all, :id, :name,
+            { prompt: "Select a business", selected: params[:business_id] || task.business_id },
             { class: "block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base py-3 px-4" } %>
       </div>
     </div>
@@ -82,9 +82,23 @@
     <div>
       <%= form.label :team_id, class: "block text-base font-medium text-gray-300 mb-2" %>
       <div class="mt-1">
-        <%= form.collection_select :team_id, Team.all, :id, :name, 
-            { prompt: "Select a team", selected: params[:team_id] }, 
-            { class: "block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base py-3 px-4" } %>
+        <%= form.collection_select :team_id, Team.all, :id, :name,
+            { prompt: "Select a team", selected: params[:team_id] || task.team_id },
+            { class: "block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base py-3 px-4",
+              data: { team_members_target: "teamSelect" } } %>
+      </div>
+    </div>
+
+    <div>
+      <%= form.label :assigned_to_id, class: "block text-base font-medium text-gray-300 mb-2" %>
+      <div class="mt-1">
+        <%= form.collection_select :assigned_to_id, 
+            task.team&.users || [], 
+            :id, 
+            :full_name, 
+            { prompt: "Select a team first" }, 
+            { class: "block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base py-3 px-4",
+              data: { team_members_target: "userSelect" } } %>
       </div>
     </div>
 

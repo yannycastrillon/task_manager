@@ -72,7 +72,8 @@ class TasksController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def task_params
-      params.expect(task: [ :title, :description, :priority, :status, :due_date, :business_id, :team_id, :assigned_to_id, :started_at, :completed_at ])
+      binding.pry
+      params.require(:task).permit(:title, :description, :priority, :status, :due_date, :business_id, :team_id, :assigned_to_id, :started_at, :completed_at)
     end
 
     def set_parent

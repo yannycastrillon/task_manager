@@ -1,13 +1,75 @@
-  <div class="min-h-screen flex flex-col justify-center items-center bg-gradient-to-r from-indigo-100 via-purple-100 to-pink-100 px-4">
-    <div class="bg-white p-8 sm:p-12 rounded-lg shadow-xl w-full max-w-screen-lg mx-auto text-center">
-      <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-6 sm:mb-8">Rails 8 - Task Manager</h1>
-      <p class="text-base sm:text-lg text-gray-600 mb-6 sm:mb-8">
-        A platform to explore Rails 8 features. Use the links below to navigate.
-      </p>
+<% content_for :title, "Dashboard" %>
 
-  <!-- Link Pages -->
+<div class="min-h-screen bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 py-8 sm:py-12">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <%# Header Section %>
+    <div class="bg-gray-800 rounded-2xl shadow-2xl border border-gray-700 overflow-hidden mb-8">
+      <div class="bg-gradient-to-r from-gray-900 via-slate-900 to-gray-900 px-6 sm:px-8 py-8 sm:py-12 text-center relative">
+        <div class="absolute inset-0 bg-gradient-to-r from-red-600/10 via-transparent to-red-600/10"></div>
+        <div class="relative">
+          <div class="flex justify-center mb-4">
+            <div class="bg-red-600/20 backdrop-blur-sm rounded-full p-4 border border-red-500/30">
+              <svg class="w-8 sm:w-10 h-8 sm:h-10 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007-.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
+              </svg>
+            </div>
+          </div>
+          <h1 class="text-2xl sm:text-4xl font-bold text-white mb-2">Dashboard</h1>
+          <div class="w-24 h-1 bg-red-600 mx-auto rounded-full"></div>
+          <p class="text-gray-400 text-sm mt-4">Your daily overview of cleaning assignments.</p>
+        </div>
+      </div>
+    </div>
 
-  <!-- Link Letter Opener -->
+    <%# Today's Jobs %>
+    <div class="mb-8">
+      <h2 class="text-2xl font-bold text-white mb-6 flex items-center justify-between">
+        Today's Jobs (<%= @today_cleaning_assignments.count %>)
+        <%= link_to "View All", cleaning_assignments_path(date: @today.to_s), class: "text-red-400 hover:text-red-300 text-base font-semibold transition-colors" if @today_cleaning_assignments.any? %>
+      </h2>
+      <% if @today_cleaning_assignments.any? %>
+        <div class="grid grid-cols-1 gap-6">
+          <%= render partial: "cleaning_assignments/dashboard_card", collection: @today_cleaning_assignments, as: :cleaning_assignment %>
+        </div>
+      <% else %>
+        <div class="text-center py-8 bg-gray-800 rounded-xl border border-gray-700">
+          <p class="text-gray-400">No cleaning assignments scheduled for today.</p>
+        </div>
+      <% end %>
+    </div>
 
+    <%# Tomorrow's Jobs %>
+    <div class="mb-8">
+      <h2 class="text-2xl font-bold text-white mb-6 flex items-center justify-between">
+        Tomorrow's Jobs (<%= @tomorrow_cleaning_assignments.count %>)
+        <%= link_to "View All", cleaning_assignments_path(date: (@today + 1.day).to_s), class: "text-red-400 hover:text-red-300 text-base font-semibold transition-colors" if @tomorrow_cleaning_assignments.any? %>
+      </h2>
+      <% if @tomorrow_cleaning_assignments.any? %>
+        <div class="grid grid-cols-1 gap-6">
+          <%= render partial: "cleaning_assignments/dashboard_card", collection: @tomorrow_cleaning_assignments, as: :cleaning_assignment %>
+        </div>
+      <% else %>
+        <div class="text-center py-8 bg-gray-800 rounded-xl border border-gray-700">
+          <p class="text-gray-400">No cleaning assignments scheduled for tomorrow.</p>
+        </div>
+      <% end %>
+    </div>
+
+    <%# Current Week's Jobs %>
+    <div class="mb-8">
+      <h2 class="text-2xl font-bold text-white mb-6 flex items-center justify-between">
+        Current Week's Jobs (<%= @current_week_cleaning_assignments.count %>)
+        <%= link_to "View All", cleaning_assignments_path(start_date: @start_of_week.to_s, end_date: @end_of_week.to_s), class: "text-red-400 hover:text-red-300 text-base font-semibold transition-colors" if @current_week_cleaning_assignments.any? %>
+      </h2>
+      <% if @current_week_cleaning_assignments.any? %>
+        <div class="grid grid-cols-1 gap-6">
+          <%= render partial: "cleaning_assignments/dashboard_card", collection: @current_week_cleaning_assignments, as: :cleaning_assignment %>
+        </div>
+      <% else %>
+        <div class="text-center py-8 bg-gray-800 rounded-xl border border-gray-700">
+          <p class="text-gray-400">No cleaning assignments scheduled for the current week (excluding today & tomorrow).</p>
+        </div>
+      <% end %>
     </div>
   </div>
+</div>

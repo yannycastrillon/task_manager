@@ -13,9 +13,8 @@
     <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
     <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
 
-    <link rel="icon" href="/icon.png" type="image/png">
-    <link rel="icon" href="/icon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/icon.png">
+    <link rel="icon" href="<%= image_path '/windowshine_logo.jpeg' %>" type="image/jpeg">
+    <link rel="apple-touch-icon" href="<%= image_path '/windowshine_logo.jpeg' %>">
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
@@ -25,19 +24,21 @@
 
   <body class="h-full font-sans antialiased text-gray-800">
     <%# Fixed Navigation Bar %>
-    <header class="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 shadow-sm z-50">
+    <header class="fixed top-0 left-0 right-0 bg-black shadow-sm z-50">
       <div class="flex justify-center w-full">
         <div class="w-full max-w-screen-lg px-4">
           <div class="flex justify-between items-center h-16">
             <%# Logo/Brand %>
             <div class="flex-shrink-0">
-              <%= link_to root_path, class: "text-gray-900 font-semibold text-xl tracking-tight hover:text-gray-700 transition-colors duration-200" do %>
-                Task Manager
+              <%= link_to root_path, class: "hover:opacity-75 transition-opacity duration-200" do %>
+                <%= image_tag "/windowshine_logo.jpeg", alt: "Windowshine Logo", class: "h-10 w-auto" %>
               <% end %>
             </div>
 
             <%# Navigation Menu %>
-            <%= render "shared/menu" %>
+            <div class="flex-grow flex justify-center">
+              <%= render "shared/menu" %>
+            </div>
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 class TeamsController < ApplicationController
-  before_action :set_team, only: %i[ show edit update destroy ]
+  before_action :set_team, only: %i[ show edit update destroy members ]
   before_action :set_users, only: %i[ new edit create update ]
 
   # GET /teams or /teams.json
@@ -56,6 +56,11 @@ class TeamsController < ApplicationController
       format.html { redirect_to teams_path, notice: "Team was successfully destroyed." }
       format.json { head :no_content }
     end
+  end
+
+  def members
+    @users = @team.users
+    render json: @users.map { |user| { id: user.id, full_name: user.full_name } }
   end
 
   private

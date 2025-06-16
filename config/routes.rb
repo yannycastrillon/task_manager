@@ -2,6 +2,9 @@ Rails.application.routes.draw do
   resources :cleaning_assignments
   resources :teams do
     resources :tasks
+    member do
+      get :members
+    end
   end
   resources :businesses do
     resources :tasks
