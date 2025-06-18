@@ -1,10 +1,29 @@
-<%# Navigation menu items %>
-<nav class="flex items-center space-x-4">
-  <%= link_to "Dashboard", root_path, class: "text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" %>
-  <%= link_to "Businesses", businesses_path, class: "text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" %>
-  <%= link_to "Teams", teams_path, class: "text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" %>
-  <%= link_to "Cleaning Assignments", cleaning_assignments_path, class: "text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" %>
+<%# Desktop Navigation menu items - Hidden on mobile, shown on md+ screens %>
+<nav class="hidden md:flex items-center space-x-2 lg:space-x-4">
+  <%= link_to root_path, class: "text-gray-300 hover:text-white px-2 py-2 lg:px-3 rounded-md text-sm font-medium transition-colors duration-200 hover:bg-gray-800" do %>
+    <span class="hidden lg:inline">Dashboard</span>
+    <span class="lg:hidden">Dashboard</span>
+  <% end %>
+  
+  <%= link_to businesses_path, class: "text-gray-300 hover:text-white px-2 py-2 lg:px-3 rounded-md text-sm font-medium transition-colors duration-200 hover:bg-gray-800" do %>
+    <span class="hidden lg:inline">Businesses</span>
+    <span class="lg:hidden">Businesses</span>
+  <% end %>
+  
+  <%= link_to teams_path, class: "text-gray-300 hover:text-white px-2 py-2 lg:px-3 rounded-md text-sm font-medium transition-colors duration-200 hover:bg-gray-800" do %>
+    <span class="hidden lg:inline">Teams</span>
+    <span class="lg:hidden">Teams</span>
+  <% end %>
+  
+  <%= link_to cleaning_assignments_path, class: "text-gray-300 hover:text-white px-2 py-2 lg:px-3 rounded-md text-sm font-medium transition-colors duration-200 hover:bg-gray-800" do %>
+    <span class="hidden lg:inline">Cleaning Assignments</span>
+    <span class="lg:hidden">Cleaning Assignments</span>
+  <% end %>
+  
+  <%# Future menu items can be added here %>
   <%# <%= link_to "Categories", categories_path, class: "text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" %>
+  
+  <%# User authentication links (commented out for now) %>
   <%# if user_signed_in? %>
     <%# link_to "Profile", edit_user_registration_path, class: "text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" %>
     <%# button_to "Sign out", destroy_user_session_path, method: :delete, class: "text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" %>
