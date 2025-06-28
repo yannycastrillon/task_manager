@@ -6,10 +6,11 @@ class User < ApplicationRecord
   # devise :database_authenticatable, :registerable,
   #        :recoverable, :rememberable, :validatable
 
+  has_many :cleaning_assignments, foreign_key: :assigned_to_id, inverse_of: :assigned_to
   has_many :sessions, dependent: :destroy
   has_many :team_memberships, dependent: :destroy
   has_many :teams, through: :team_memberships
-  has_many :tasks, foreign_key: :assigned_to_id, dependent: :destroy, inverse_of: :assigned_to
+  has_many :tasks, through: :cleaning_assignments
 
   normalizes :email, with: ->(e) { e.strip.downcase }
 

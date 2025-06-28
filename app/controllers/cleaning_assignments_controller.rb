@@ -9,8 +9,7 @@ class CleaningAssignmentsController < ApplicationController
 
   # GET /cleaning_assignments/1 or /cleaning_assignments/1.json
   def show
-    @business_tasks = @cleaning_assignment.business.tasks.includes(:team, :assigned_to)
-    @team_tasks = @cleaning_assignment.team.tasks.includes(:business, :assigned_to)
+    @tasks = @cleaning_assignment.tasks
   end
 
   # GET /cleaning_assignments/new
@@ -20,8 +19,7 @@ class CleaningAssignmentsController < ApplicationController
 
   # GET /cleaning_assignments/1/edit
   def edit
-    @business_tasks = @cleaning_assignment.business.tasks.includes(:team, :assigned_to)
-    @team_tasks = @cleaning_assignment.team.tasks.includes(:business, :assigned_to)
+    @tasks = @cleaning_assignment.tasks
   end
 
   # POST /cleaning_assignments or /cleaning_assignments.json
@@ -44,10 +42,12 @@ class CleaningAssignmentsController < ApplicationController
     respond_to do |format|
       if @cleaning_assignment.update(cleaning_assignment_params)
         format.html { redirect_to @cleaning_assignment, notice: "Cleaning assignment was successfully updated." }
-        format.json { render :show, status: :ok, location: @cleaning_assignment }
+        format.json { render json: { success: true, status: @cleaning_assignment.status }, status: :ok }
+        format.turbo_stream
       else
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @cleaning_assignment.errors, status: :unprocessable_entity }
+        format.turbo_stream { render turbo_stream: turbo_stream.replace("form_errors", partial: "shared/errors", locals: { errors: @cleaning_assignment.errors }) }
       end
     end
   end
@@ -65,33 +65,25 @@ class CleaningAssignmentsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_cleaning_assignment
-      @cleaning_assignment = CleaningAssignment.find(params[:id])
+      @cleaning_assignment = CleaningAssignment.includes(:business, :team, :assigned_to, :tasks).find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def cleaning_assignment_params
       params.require(:cleaning_assignment).permit(
-        :business_id,
-        :team_id,
-        :scheduled_date,
+        :notes,
         :started_at,
         :completed_at,
-        :estimated_duration_minutes,
+        :scheduled_date,
+        :total_estimated_duration_minutes,
         :actual_duration_minutes,
-        :notes,
-        :special_instructions,
-        :number_of_windows,
-        :number_of_floors,
-        :requires_special_equipment,
-        :requires_insurance_verification,
         :status,
-        :price,
-        :payment_status,
-        :last_cleaned_at,
-        :cleaning_frequency_days,
-        :is_recurring,
-        :recurrence_pattern,
-        :recurrence_end_date
+        :priority,
+        :team_id,
+        :business_id,
+        :assigned_to_id,
+        :recurring_assignment_id,
+        task_ids: []
       )
     end
 end

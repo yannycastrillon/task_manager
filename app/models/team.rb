@@ -5,14 +5,13 @@ class Team < ApplicationRecord
 
   has_many :team_memberships, dependent: :destroy
   has_many :users, through: :team_memberships
-  has_many :tasks, dependent: :destroy
+  has_many :tasks, through: :cleaning_assignments
 
   # Nested attributes
   accepts_nested_attributes_for :team_memberships, allow_destroy: true, reject_if: :all_blank
 
   # Validations
-  validates :name, presence: true
-  validates :status, presence: true
+  validates :name, :status, presence: true
 
   # Callbacks
   after_save :update_team_memberships

@@ -15,52 +15,67 @@
               </svg>
             </div>
           </div>
-          <h1 class="text-2xl sm:text-4xl font-bold text-white mb-2">
+          <h1 class="text-lg sm:text-2xl md:text-4xl font-bold text-white mb-2">
             Cleaning Assignment
           </h1>
           <div class="w-24 h-1 bg-red-600 mx-auto rounded-full"></div>
-          <p class="text-gray-400 text-sm mt-4">Last updated <%= @cleaning_assignment.updated_at.strftime("%B %d, %Y") %></p>
+          <p class="text-gray-400 text-xs sm:text-sm mt-4">Last updated <%= @cleaning_assignment.updated_at.strftime("%B %d, %Y") %></p>
         </div>
       </div>
 
       <%# Assignment Details %>
       <div class="p-6 sm:p-8 bg-gray-800">
         <%# Quick Actions Bar %>
-        <div class="flex flex-wrap gap-2 mb-8 p-4 bg-gray-700/30 rounded-xl border border-gray-600/50 justify-between items-center">
-          <%= link_to edit_cleaning_assignment_path(@cleaning_assignment), class: "flex items-center space-x-2 px-3 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors text-sm text-gray-300" do %>
-            <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-            </svg>
-            <span>Edit Assignment</span>
-  <% end %>
+        <div data-controller="status-update" id="cleaning-assignments-quick-actions" class="flex flex-col sm:flex-row gap-4 mb-8 p-4 bg-gray-700/30 rounded-xl border border-gray-600/50">
+          <%# Left side - Edit button and badges %>
+          <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 flex-1">
+            <%= link_to edit_cleaning_assignment_path(@cleaning_assignment), class: "flex items-center space-x-2 px-3 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors text-sm text-gray-300 w-full sm:w-auto justify-center sm:justify-start" do %>
+              <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+              </svg>
+              <span>Edit Assignment</span>
+            <% end %>
 
-          <%# Status Badge %>
-          <% case @cleaning_assignment.status %>
-          <% when 'scheduled' %>
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-500/20 text-blue-400 border border-blue-500/30">
-              <div class="w-2 h-2 bg-blue-400 rounded-full mr-2"></div>
-              Scheduled
-            </span>
-          <% when 'in_progress' %>
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-amber-500/20 text-amber-400 border border-amber-500/30">
-              <div class="w-2 h-2 bg-amber-400 rounded-full mr-2 animate-pulse"></div>
-              In Progress
-            </span>
-          <% when 'completed' %>
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-              <div class="w-2 h-2 bg-emerald-400 rounded-full mr-2"></div>
-              Completed
-            </span>
-          <% when 'cancelled' %>
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-500/20 text-red-400 border border-red-500/30">
-              <div class="w-2 h-2 bg-red-400 rounded-full mr-2"></div>
-              Cancelled
-            </span>
-          <% end %>
+            <%# Status and Priority Badges Container %>
+            <div class="flex flex-col sm:flex-row gap-2 sm:gap-2 w-full sm:w-auto">
+              <%# Status Badge %>
+              <div data-status-update-target="statusBadge" class="flex justify-center sm:justify-start">
+                <%= cleaning_assignment_status_badge_component(@cleaning_assignment.status) %>
+              </div>
+            </div>
+          </div>
+
+          <%# Right side - Status Update Dropdown %>
+          <div class="relative w-full sm:w-auto">
+            <button type="button" data-action="click->status-update#toggle" data-status-update-target="statusButton"
+              class="flex items-center justify-center space-x-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 focus:bg-purple-700 rounded-lg transition-all duration-200 text-sm text-white w-full sm:w-auto shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-800">
+              <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+              </svg>
+              <span>Update Status</span>
+              <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m6 9 6 6 6-6"/>
+              </svg>
+            </button>
+
+            <div data-status-update-target="statusDropdown" class="absolute right-0 mt-2 w-full sm:w-48 bg-gray-800 border border-gray-600 rounded-lg shadow-lg z-10 hidden">
+              <div class="py-1">
+                <% CleaningAssignment::STATUSES.each do |status| %>
+                  <button type="button"
+                    data-action="click->status-update#updateStatus"
+                    data-status="<%= status %>"
+                    data-url="<%= cleaning_assignment_path(@cleaning_assignment) %>"
+                    class="w-full text-left px-4 py-3 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
+                    <%= status.titleize %>
+                  </button>
+                <% end %>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <h2 class="text-xl sm:text-2xl font-semibold text-white mb-6 flex items-center">
+        <h2 class="text-base sm:text-xl md:text-2xl font-semibold text-white mb-4 flex items-center">
           Assignment Information
         </h2>
         
@@ -73,8 +88,8 @@
               </svg>
             </div>
             <div class="flex-1 min-w-0">
-              <h3 class="font-medium text-white mb-1">Business</h3>
-              <p class="text-gray-300 leading-relaxed break-words"><%= @cleaning_assignment.business.name %></p>
+              <h3 class="font-medium text-white mb-1 text-sm sm:text-base">Business</h3>
+              <p class="text-gray-300 leading-relaxed break-words text-xs sm:text-sm"><%= @cleaning_assignment.business.name %></p>
             </div>
           </div>
 
@@ -88,8 +103,8 @@
               </svg>
             </div>
             <div class="flex-1 min-w-0">
-              <h3 class="font-medium text-white mb-1">Team</h3>
-              <p class="text-gray-300 leading-relaxed break-words"><%= @cleaning_assignment.team.name %></p>
+              <h3 class="font-medium text-white mb-1 text-sm sm:text-base">Team</h3>
+              <p class="text-gray-300 leading-relaxed break-words text-xs sm:text-sm"><%= @cleaning_assignment.team.name %></p>
             </div>
           </div>
 
@@ -103,8 +118,8 @@
               </svg>
             </div>
             <div class="flex-1 min-w-0">
-              <h3 class="font-medium text-white mb-1">Scheduled Date</h3>
-              <p class="text-gray-300 leading-relaxed break-words"><%= @cleaning_assignment.scheduled_date.strftime("%B %d, %Y") %></p>
+              <h3 class="font-medium text-white mb-1 text-sm sm:text-base">Scheduled Date</h3>
+              <p class="text-gray-300 leading-relaxed break-words text-xs sm:text-sm"><%= @cleaning_assignment.scheduled_date.strftime("%B %d, %Y") %></p>
             </div>
           </div>
 
@@ -116,8 +131,8 @@
               </svg>
             </div>
             <div class="flex-1 min-w-0">
-              <h3 class="font-medium text-white mb-1">Estimated Duration</h3>
-              <p class="text-gray-300 leading-relaxed break-words"><%= pluralize(@cleaning_assignment.estimated_duration_minutes, 'minute') %></p>
+              <h3 class="font-medium text-white mb-1 text-sm sm:text-base">Estimated Duration</h3>
+              <p class="text-gray-300 leading-relaxed break-words text-xs sm:text-sm"><%= pluralize(@cleaning_assignment.total_estimated_duration_minutes, 'minute') %></p>
             </div>
           </div>
 
@@ -133,22 +148,8 @@
                 </svg>
               </div>
               <div class="flex-1 min-w-0">
-                <h3 class="font-medium text-white mb-1">Notes</h3>
-                <p class="text-gray-300 leading-relaxed break-words"><%= @cleaning_assignment.notes %></p>
-              </div>
-            </div>
-          <% end %>
-
-          <% if @cleaning_assignment.recurrence_pattern.present? %>
-            <div class="flex items-start space-x-4 p-4 bg-gray-700/50 rounded-xl border border-gray-600 hover:bg-gray-700 transition-all duration-200 group">
-              <div class="bg-red-600/20 rounded-full p-3 border border-red-500/30 group-hover:bg-red-600/30 transition-colors">
-                <svg class="w-5 h-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                </svg>
-              </div>
-              <div class="flex-1 min-w-0">
-                <h3 class="font-medium text-white mb-1">Recurrence Pattern</h3>
-                <p class="text-gray-300 leading-relaxed break-words"><%= @cleaning_assignment.recurrence_pattern.titleize %></p>
+                <h3 class="font-medium text-white mb-1 text-sm sm:text-base">Notes</h3>
+                <p class="text-gray-300 leading-relaxed break-words text-xs sm:text-sm"><%= @cleaning_assignment.notes %></p>
               </div>
             </div>
           <% end %>
@@ -161,27 +162,9 @@
               Related Tasks
             </h2>
           </div>
-          
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-            <%# Business Tasks %>
-            <div class="bg-gradient-to-br from-gray-700 to-gray-800 p-6 rounded-xl border border-gray-600">
-              <h3 class="font-semibold text-white mb-4">Business Tasks</h3>
-              <div class="space-y-4">
-                <% @business_tasks.each do |task| %>
-                  <%= render "shared/task", task: task, parent: task.business %>
-                <% end %>
-              </div>
-            </div>
 
-            <%# Team Tasks %>
-            <div class="bg-gradient-to-br from-gray-700 to-gray-800 p-6 rounded-xl border border-gray-600">
-              <h3 class="font-semibold text-white mb-4">Team Tasks</h3>
-              <div class="space-y-4">
-                <% @team_tasks.each do |task| %>
-                  <%= render "shared/task", task: task, parent: task.team %>
-                <% end %>
-              </div>
-            </div>
+          <div class="flex flex-col gap-4">
+            <%= render partial: "shared/task", locals: { tasks: @tasks, cleaning_assignment: @cleaning_assignment } %>
           </div>
         </div>
 

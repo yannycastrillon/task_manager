@@ -26,6 +26,14 @@ class BusinessesController < ApplicationController
 
   # GET /businesses/1 or /businesses/1.json
   def show
+    assignments = @business.cleaning_assignments
+    assignments_by_status = @business.cleaning_assignments.group_by(&:status)
+
+    @total_assignments = assignments.count
+    @active_assignments = assignments_by_status.fetch("active", [])
+    @completed_assignments = assignments_by_status.fetch("completed", [])
+    @scheduled_assignments = assignments_by_status.fetch("scheduled", [])
+    @in_progress_assignments = assignments_by_status.fetch("in_progress", [])
   end
 
   # GET /businesses/new
@@ -65,7 +73,7 @@ class BusinessesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_business
-      @business = Business.find(params[:id])
+      @business = Business.includes(:cleaning_assignments).find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.

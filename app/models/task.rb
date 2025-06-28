@@ -1,38 +1,30 @@
 class Task < ApplicationRecord
   # Constants
-  LOW = "low"
-  MEDIUM = "medium"
-  HIGH = "high"
-
-  NOT_STARTED = "not_started"
-  IN_PROGRESS = "in_progress"
-  COMPLETED = "completed"
-  CANCELLED = "cancelled"
-
-  PRIORITIES = [ LOW, MEDIUM, HIGH ].freeze
-  STATUSES = [ NOT_STARTED, IN_PROGRESS, COMPLETED, CANCELLED ].freeze
+  WINDOW = "window"
+  FLOOR = "floor"
+  ROOM = "room"
+  OTHER = "other"
+  LOCATIONS = [ WINDOW, FLOOR, ROOM, OTHER ].freeze
 
   # Associations
-  belongs_to :team
-  belongs_to :business
-  belongs_to :assigned_to, class_name: "User", optional: true
+  has_many :cleaning_assignments, dependent: :destroy
+  has_many :businesses, through: :cleaning_assignments
+  has_many :teams, through: :cleaning_assignments
+  # has_many :assigned_tos, through: :cleaning_assignments, class_name: "User", source: :assigned_to
+  has_many :cleaning_assignment_tasks
+  has_many :cleaning_assignments, through: :cleaning_assignment_tasks
+
+  # Enums
+  enum :location, {
+    window: WINDOW,
+    floor: FLOOR,
+    room: ROOM,
+    other: OTHER
+  }
 
   # Validations
   validates :title, presence: true
-  validates :status, presence: true
-  validates :priority, presence: true
-  validates :due_date, presence: true
-  validates :priority, inclusion: { in: PRIORITIES }
-  validates :status, inclusion: { in: STATUSES }
-
-  # Enums
-  enum :status, { not_started: NOT_STARTED, in_progress: IN_PROGRESS,
-                  completed: COMPLETED, cancelled: CANCELLED }
-  enum :priority, { low: LOW, medium: MEDIUM, high: HIGH }
-
-  # Scopes
-  scope :due_today, -> { where(due_date: Date.current) }
-  scope :overdue, -> { where("due_date < ?", Date.current).where.not(status: :completed) }
-  scope :upcoming, -> { where("due_date > ?", Date.current) }
-  scope :in_progress, -> { where.not(status: :in_progress) }
+  validates :quantity, numericality: { greater_than_or_equal_to: 0 }
+  validates :location, inclusion: { in: LOCATIONS }
+  validates :estimated_duration, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, allow_nil: true
 end

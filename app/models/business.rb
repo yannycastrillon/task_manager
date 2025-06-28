@@ -3,7 +3,7 @@ class Business < ApplicationRecord
   has_many :cleaning_assignments, dependent: :destroy
   has_many :teams, through: :cleaning_assignments
   has_many :users, through: :cleaning_assignments
-  has_many :tasks, dependent: :destroy
+  has_many :tasks, through: :cleaning_assignments
 
   # Validations
   validates :name, presence: true

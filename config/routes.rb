@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   resources :cleaning_assignments
+  resources :tasks
   resources :teams do
     resources :tasks
     member do

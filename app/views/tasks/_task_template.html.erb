@@ -1,0 +1,16 @@
+<div class="w-full">
+  <div class="bg-gray-700 rounded-xl border border-gray-600 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5 w-full">
+    <div class="p-6">
+      <h3 class="text-lg font-semibold text-white mb-2 truncate"><%= task.title %></h3>
+      <p class="text-gray-300 text-sm mb-2"><%= task.description %></p>
+      <div class="flex flex-wrap gap-4 mb-2">
+        <span class="inline-block bg-blue-600/20 text-blue-400 px-3 py-1 rounded-full text-xs font-medium border border-blue-500/30">Location: <%= task.location.titleize %></span>
+        <span class="inline-block bg-green-600/20 text-green-400 px-3 py-1 rounded-full text-xs font-medium border border-green-500/30">Quantity: <%= task.quantity %></span>
+        <span class="inline-block bg-yellow-600/20 text-yellow-400 px-3 py-1 rounded-full text-xs font-medium border border-yellow-500/30">Est. Duration: <%= task.estimated_duration %> min</span>
+      </div>
+      <div class="flex justify-end mt-4">
+        <%= link_to 'View', task_path(task), class: "inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200" %>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,4 +1,4 @@
-<% content_for :title, "Edit Task" %>
+<% content_for :title, "Edit Template Task" %>
 
 <div class="min-h-screen bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900">
   <div class="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
@@ -14,7 +14,7 @@
               </svg>
             </div>
           </div>
-          <h1 class="text-2xl sm:text-4xl font-bold text-white mb-2">Edit Task</h1>
+          <h1 class="text-2xl sm:text-4xl font-bold text-white mb-2">Edit Template Task</h1>
           <div class="w-24 h-1 bg-red-600 mx-auto rounded-full"></div>
           <p class="text-gray-400 text-sm mt-4">Update your task details.</p>
         </div>
@@ -24,8 +24,8 @@
     <%= render "form", task: @task %>
 
     <div class="mt-8 flex justify-center space-x-4">
-      <%= link_to "Show Task", [@parent, @task], class: "rounded-md border border-gray-600 bg-gray-700 py-3 px-6 text-base font-medium text-gray-300 shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800" %>
-      <%= link_to "Back to Tasks", polymorphic_path([@parent, :tasks]), class: "rounded-md border border-gray-600 bg-gray-700 py-3 px-6 text-base font-medium text-gray-300 shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800" %>
+      <%= link_to "Show Task", @task, class: "rounded-md border border-gray-600 bg-gray-700 py-3 px-6 text-base font-medium text-gray-300 shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800" %>
+      <%= link_to "Back to Tasks", tasks_path, class: "rounded-md border border-gray-600 bg-gray-700 py-3 px-6 text-base font-medium text-gray-300 shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800" %>
     </div>
   </div>
 </div>

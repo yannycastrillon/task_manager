@@ -8,12 +8,13 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
-# Create default users
-Rails.logger.info "Creating default users..."
+require 'faker'
 
-# Create admin user
+Rails.logger.info "Seeding started..."
+
+# === USERS ===
 users = []
-Rails.logger.info "Creating admin and regular users..." do
+Rails.logger.info "Creating default users..." do
   admin = User.find_or_initialize_by(email: ENV["DEFAULT_ADMIN_EMAIL"]) do |user|
     user.password = ENV["DEFAULT_ADMIN_PASSWORD"]
     user.password_confirmation = ENV["DEFAULT_ADMIN_PASSWORD"]
@@ -25,12 +26,11 @@ Rails.logger.info "Creating admin and regular users..." do
 
   if admin.new_record?
     admin.save!
-    Rails.logger.info "Created admin user: #{ENV["DEFAULT_ADMIN_EMAIL"]}"
+    Rails.logger.info "Admin user created: #{admin.email}"
   else
-    Rails.logger.info "Admin user already exists"
+    Rails.logger.info "Admin user already exists: #{admin.email}"
   end
 
-  # Create regular user
   user = User.find_or_initialize_by(email: ENV["DEFAULT_USER_EMAIL"]) do |user|
     user.password = ENV["DEFAULT_USER_PASSWORD"]
     user.password_confirmation = ENV["DEFAULT_USER_PASSWORD"]
@@ -39,64 +39,63 @@ Rails.logger.info "Creating admin and regular users..." do
     user.phone = Faker::PhoneNumber.phone_number
     user.role = "user"
   end
-
   if user.new_record?
     user.save!
-    Rails.logger.info "Created regular user: #{ENV["DEFAULT_USER_EMAIL"]}"
+    Rails.logger.info "Created user created: #{user.email}"
   else
-    Rails.logger.info "Regular user already exists"
+    Rails.logger.info "Created user already exists: #{user.email}"
   end
 
-  users << admin
-  users << user
+  users = [ admin, user ]
 end
 
-# Create team
+# === TEAMS ===
 teams = []
-Rails.logger.info "Creating team..." do
+Rails.logger.info "Creating teams..." do
   [ "Windowshine", "Houseshine" ].each do |name|
     team = Team.find_or_initialize_by(name: name) do |team|
-      team.description = "#{name} is a team of window cleaners for comercial and house properties"
+      team.description = "#{name} is a team of window cleaners for commercial and house properties"
       team.status = "active"
     end
 
     if team.new_record?
       team.save!
-      Rails.logger.info "Created team: #{team.name}"
+      Rails.logger.info "Team created: #{team.name}"
     else
-      Rails.logger.info "Team already exists"
+      Rails.logger.info "Team already exists: #{team.name}"
     end
     teams << team
   end
 end
 
+# === TEAM MEMBERSHIPS ===
 team_memberships = []
 Rails.logger.info "Creating team memberships..." do
-  # Create team membership for admin user and regular user
-  users.each_with_index do |user, index|
-    team_membership = TeamMembership.find_or_initialize_by(user: user, team: teams[index]) do |membership|
-      membership.role = user == admin ? "team_lead" : "member"
+  admin = users.first
+  users.each_with_index do |u, i|
+    team_membership = TeamMembership.find_or_initialize_by(user: u, team: teams[i]) do |membership|
+      membership.role = u == admin ? "team_lead" : "member"
       membership.status = "active"
       membership.start_date = Date.current
       membership.end_date = Date.current + 1.year
     end
 
-    # Create team membership for admin user and regular user
     if team_membership.new_record?
       team_membership.save!
-      Rails.logger.info "Created team membership for #{user.email}"
+      Rails.logger.info "Team membership created for user: #{u.email} in team: #{teams[i].name}"
     else
-      Rails.logger.info "Team membership for #{user.email} already exists"
+      Rails.logger.info "Team membership already exists for user: #{u.email} in team: #{teams[i].name}"
     end
 
     team_memberships << team_membership
   end
 end
 
-# Create business
+# === BUSINESSES ===
 businesses = []
-Rails.logger.info "Creating business..." do
-  [ "Nike", "Adidas", "Puma", "Reebok", "Under Armour" ].each do |name|
+business_names = [ "Nike", "Adidas", "Under Armour" ]
+Rails.logger.info "Creating businesses..." do
+  business_names.each do |name|
     business = Business.find_or_initialize_by(name: name) do |business|
       business.address = Faker::Address.full_address
       business.phone = Faker::PhoneNumber.phone_number
@@ -107,61 +106,97 @@ Rails.logger.info "Creating business..." do
 
     if business.new_record?
       business.save!
-      Rails.logger.info "Created business: #{business.name}"
+      Rails.logger.info "Business created: #{business.name}"
     else
-      Rails.logger.info "Business already exists"
+      Rails.logger.info "Business already exists: #{business.name}"
     end
+
     businesses << business
   end
 end
 
-# Create cleaning assignment
-cleaning_assignments = []
-Rails.logger.info "Creating cleaning assignment..." do
-  businesses.each_with_index do |business, index|
-    cleaning_assignment = CleaningAssignment.find_or_initialize_by(business: business, team: teams.sample) do |assignment|
-      assignment.scheduled_date = Date.current
-      assignment.status = "scheduled"
-      assignment.price = Faker::Number.decimal(l_digits: 2)
-    end
-
-    if cleaning_assignment.new_record?
-      cleaning_assignment.save!
-      Rails.logger.info "Created cleaning assignment for #{business.name}"
-    else
-      Rails.logger.info "Cleaning assignment for #{business.name} already exists"
-    end
-
-    cleaning_assignments << cleaning_assignment
-  end
-end
-
-# Create tasks
+# === TASKS ===
 tasks = []
 Rails.logger.info "Creating tasks..." do
-  available_businesses = businesses.dup  # Create a copy of businesses array
+  available_businesses = businesses.dup
   businesses.size.times do
-    break if available_businesses.empty?  # Stop if we've used all businesses
+    break if available_businesses.empty?
 
-    business = available_businesses.delete(available_businesses.sample)  # Get and remove a random business
-    task = Task.find_or_initialize_by(title: "Clean #{business.name}") do |task|
-      task.description = "Clean windows at #{business.name}"
-      task.due_date = Date.current + rand(1..7).days
-      task.priority = Task::PRIORITIES.sample
-      task.status = Task::STATUSES.sample
-      task.assigned_to = users.sample
-      task.business = business
-      task.team = teams.sample
+    business = available_businesses.delete(available_businesses.sample) # Get and remove a random business
+    task = Task.find_or_initialize_by(title: "Tempalte Clean #{business.name}") do |t|
+      t.description = "Teamplate description for #{business.name}"
+      t.quantity = rand(1..10)
+      t.location = Task::LOCATIONS.sample
+      t.estimated_duration = rand(10..60)
+      t.metadata = {}
     end
 
     if task.new_record?
       task.save!
-      Rails.logger.info "Created task: #{task.title}"
+      Rails.logger.info "Task created: #{task.title} for business: #{business.name}"
     else
-      Rails.logger.info "Task already exists: #{task.title}"
+      Rails.logger.info "Task already exists: #{task.title} for business: #{business.name}"
     end
 
     tasks << task
+  end
+end
+
+# === RECURRING ASSIGNMENTS ===
+recurring_assignments = []
+Rails.logger.info "Creating recurring assignments..." do
+  2.times do
+    recurring_assignment = RecurringAssignment.find_or_initialize_by(
+      recurrence_pattern: RecurringAssignment::RECURRENCE_PATTERNS.sample,
+      is_active: true,
+      is_recurring: true,
+      recurrence_interval: 1,
+      recurrence_end_date: Date.current + 1.year
+    )
+
+    if recurring_assignment.new_record?
+      recurring_assignment.save!
+      Rails.logger.info "Recurring assignment created: #{recurring_assignment.recurrence_pattern}"
+    else
+      Rails.logger.info "Recurring assignment already exists: #{recurring_assignment.recurrence_pattern}"
+    end
+
+    recurring_assignments << recurring_assignment
+  end
+end
+
+# === CLEANING ASSIGNMENTS ===
+cleaning_assignments = []
+Rails.logger.info "Creating cleaning assignments..." do
+  businesses.each_with_index do |business, i|
+    team = teams.sample
+    task = tasks[i % tasks.size]
+    assigned_to = users.sample
+    recurring_assignment = recurring_assignments.sample
+
+    ca = CleaningAssignment.find_or_initialize_by(business: business, team: team)
+    ca.scheduled_date = Date.current + i.days
+    ca.total_estimated_duration_minutes = task.estimated_duration
+    ca.actual_duration_minutes = nil
+    ca.notes = "Initial cleaning assignment for #{business.name}"
+    ca.metadata = {
+      special_instructions: "Handle with care",
+      requires_insurance_verification: [ true, false ].sample,
+      number_of_windows: rand(2..8),
+      number_of_floors: rand(1..2)
+    }
+    ca.assigned_to = assigned_to
+    ca.recurring_assignment = recurring_assignment
+    ca.tasks << task
+
+    if ca.new_record?
+      ca.save!
+      Rails.logger.info "Cleaning assignment created for business: #{business.name}, team: #{team.name}, task: #{task.title}"
+    else
+      Rails.logger.info "Cleaning assignment already exists for business: #{business.name}, team: #{team.name}, task: #{task.title}"
+    end
+
+    cleaning_assignments << ca
   end
 end
 

@@ -16,11 +16,11 @@
               </svg>
             </div>
           </div>
-          <h1 class="text-2xl sm:text-4xl font-bold text-white mb-2">
+          <h1 class="text-lg sm:text-2xl md:text-4xl font-bold text-white mb-2">
             <%= @business.name %>
           </h1>
           <div class="w-24 h-1 bg-red-600 mx-auto rounded-full"></div>
-          <p class="text-gray-400 text-sm mt-4">Last updated <%= @business.updated_at.strftime("%B %d, %Y") %></p>
+          <p class="text-gray-400 text-xs sm:text-sm mt-4">Last updated <%= @business.updated_at.strftime("%B %d, %Y") %></p>
         </div>
       </div>
 
@@ -51,7 +51,7 @@
           <% end %>
         </div>
 
-        <h2 class="text-xl sm:text-2xl font-semibold text-white mb-6 flex items-center">
+        <h2 class="text-base sm:text-xl md:text-2xl font-semibold text-white mb-4 flex items-center">
           Business Information
         </h2>
         
@@ -64,8 +64,8 @@
               </svg>
             </div>
             <div class="flex-1 min-w-0">
-              <h3 class="font-medium text-white mb-1">Address</h3>
-              <p class="text-gray-300 leading-relaxed break-words"><%= @business.address %></p>
+              <h3 class="font-medium text-white mb-1 text-sm sm:text-base">Address</h3>
+              <p class="text-gray-300 leading-relaxed break-words text-xs sm:text-sm"><%= @business.address %></p>
             </div>
           </div>
 
@@ -121,17 +121,12 @@
         <div class="mb-10">
           <div class="flex items-center justify-between mb-6">
             <h2 class="text-xl sm:text-2xl font-semibold text-white">
-              Task Statistics
+              Cleaning Assignments Statistics
             </h2>
-            <a href="<%= business_tasks_path(@business) %>" class="flex items-center space-x-1 text-gray-400 hover:text-white transition-colors text-sm">
-              <span>View Details</span>
-              <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="9 18 15 12 9 6"></polyline>
-              </svg>
-            </a>
           </div>
-          
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+
+          <div class="flex flex-col gap-4 sm:gap-6 mb-8">
+            <!-- In Progress -->
             <div class="bg-gradient-to-br from-gray-700 to-gray-800 p-6 rounded-xl border border-gray-600 hover:border-gray-500 transition-all duration-200 transform hover:scale-105">
               <div class="flex items-center justify-between mb-4">
                 <div class="bg-red-600 rounded-full p-3 shadow-lg">
@@ -141,16 +136,17 @@
                   </svg>
                 </div>
                 <span class="text-2xl sm:text-3xl font-bold text-white">
-                  <%= @business.tasks.in_progress.count %>
+                  <%= @active_assignments.count %>
                 </span>
               </div>
               <h3 class="font-semibold text-white mb-1">In Progress</h3>
-              <p class="text-gray-400 text-sm mb-3">Active tasks</p>
+              <p class="text-gray-400 text-sm mb-3">Active assignments</p>
               <div class="w-full bg-gray-600 rounded-full h-2">
-                <div class="bg-red-600 h-2 rounded-full" style="width: <%= (@business.tasks.in_progress.count.to_f / @business.tasks.count * 100).round %>%"></div>
+                <div class="bg-red-600 h-2 rounded-full" style="width: <%= (@active_assignments.count.to_f / @total_assignments * 100).round %>%"></div>
               </div>
             </div>
 
+            <!-- Completed -->
             <div class="bg-gradient-to-br from-gray-700 to-gray-800 p-6 rounded-xl border border-gray-600 hover:border-gray-500 transition-all duration-200 transform hover:scale-105">
               <div class="flex items-center justify-between mb-4">
                 <div class="bg-green-600 rounded-full p-3 shadow-lg">
@@ -160,16 +156,17 @@
                   </svg>
                 </div>
                 <span class="text-2xl sm:text-3xl font-bold text-white">
-                  <%= @business.tasks.completed.count %>
+                  <%= @completed_assignments.count %>
                 </span>
               </div>
               <h3 class="font-semibold text-white mb-1">Completed</h3>
-              <p class="text-gray-400 text-sm mb-3">Finished tasks</p>
+              <p class="text-gray-400 text-sm mb-3">Finished assignments</p>
               <div class="w-full bg-gray-600 rounded-full h-2">
-                <div class="bg-green-600 h-2 rounded-full" style="width: <%= (@business.tasks.completed.count.to_f / @business.tasks.count * 100).round %>%"></div>
+                <div class="bg-green-600 h-2 rounded-full" style="width: <%= (@completed_assignments.count.to_f / @total_assignments * 100).round %>%"></div>
               </div>
             </div>
 
+            <!-- Scheduled -->
             <div class="bg-gradient-to-br from-gray-700 to-gray-800 p-6 rounded-xl border border-gray-600 hover:border-gray-500 transition-all duration-200 transform hover:scale-105">
               <div class="flex items-center justify-between mb-4">
                 <div class="bg-blue-600 rounded-full p-3 shadow-lg">
@@ -181,13 +178,13 @@
                   </svg>
                 </div>
                 <span class="text-2xl sm:text-3xl font-bold text-white">
-                  <%= @business.cleaning_assignments.count %>
+                  <%= @scheduled_assignments.count %>
                 </span>
               </div>
               <h3 class="font-semibold text-white mb-1">Scheduled</h3>
-              <p class="text-gray-400 text-sm mb-3">Cleaning assignments</p>
+              <p class="text-gray-400 text-sm mb-3">Future assignments</p>
               <div class="w-full bg-gray-600 rounded-full h-2">
-                <div class="bg-blue-600 h-2 rounded-full" style="width: <%= (@business.cleaning_assignments.count.to_f / (@business.tasks.count + @business.cleaning_assignments.count) * 100).round %>%"></div>
+                <div class="bg-blue-600 h-2 rounded-full" style="width: <%= (@scheduled_assignments.count.to_f / @total_assignments * 100).round %>%"></div>
               </div>
             </div>
           </div>
