@@ -1,4 +1,4 @@
-<%= form_with(model: cleaning_assignment, class: "space-y-6 bg-gray-800 p-8 rounded-xl shadow-xl border border-gray-700") do |form| %>
+<%= form_with(model: cleaning_assignment, data: { turbo: false }, local: true, class: "space-y-6 bg-gray-800 p-8 rounded-xl shadow-xl border border-gray-700") do |form| %>
   <% if cleaning_assignment.errors.any? %>
     <div class="rounded-md bg-red-50 p-4 mb-6">
       <div class="flex">
@@ -55,7 +55,7 @@
     <div>
       <%= form.label :scheduled_date, class: "block text-base font-medium text-gray-300 mb-2" %>
       <div class="mt-1">
-        <%= form.date_field :scheduled_date, 
+        <%= form.date_field :scheduled_date,
             class: "block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base py-3 px-4" %>
       </div>
     </div>

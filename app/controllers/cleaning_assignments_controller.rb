@@ -70,20 +70,14 @@ class CleaningAssignmentsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def cleaning_assignment_params
-      params.require(:cleaning_assignment).permit(
-        :notes,
-        :started_at,
-        :completed_at,
-        :scheduled_date,
-        :total_estimated_duration_minutes,
-        :actual_duration_minutes,
-        :status,
-        :priority,
-        :team_id,
-        :business_id,
-        :assigned_to_id,
-        :recurring_assignment_id,
-        task_ids: []
+      permitted = params.require(:cleaning_assignment).permit(
+        :notes, :started_at, :completed_at, :scheduled_date, :total_estimated_duration_minutes,
+        :actual_duration_minutes, :status, :priority, :team_id, :business_id, :assigned_to_id,
+        :recurring_assignment_id, task_ids: []
       )
+      if permitted[:scheduled_date].present?
+        permitted[:scheduled_date] = Time.zone.parse(permitted[:scheduled_date])
+      end
+      permitted
     end
 end

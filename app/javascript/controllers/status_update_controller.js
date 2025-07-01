@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = [ "statusDropdown", "statusButton", "statusBadge" ]
+  static targets = [ "statusDropdown", "statusButton", "statusBadge", "statusForm", "statusInput" ]
 
   connect() {
     console.log(`StatusUpdateController connected to element with ID: ${this.element}`)
@@ -22,65 +22,11 @@ export default class extends Controller {
   updateStatus(event) {
     event.preventDefault()
     const status = event.currentTarget.dataset.status
-    const url = event.currentTarget.dataset.url
-
-    console.log(`Updating status to: ${status} for URL: ${url}`)
-
-    this.updateField('status', status, url, this.statusButtonTarget)
-  }
-
-
-  updateField(field, value, url, buttonTarget) {
-    // Show loading state
-    const originalContent = buttonTarget.innerHTML
-    buttonTarget.innerHTML = `
-      <svg class="animate-spin w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-      </svg>
-      <span>Updating...</span>
-    `
-    
-    // Send PATCH request to update field
-    console.log(`Sending PATCH request to update ${field} to ${value} at ${url}`)
-    fetch(url, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify({
-        cleaning_assignment: { [field]: value }
-      })
-    })
-    .then(response => {
-      if (response.ok) {
-        return response.json()
-      } else if (response.status === 401) {
-        // Redirect to login page for unauthorized requests
-        window.location.href = '/sessions/new'
-        throw new Error('Unauthorized - redirecting to login')
-      } else {
-        throw new Error(`Failed to update ${field}`)
-      }
-    })
-    .then(data => {
-      // Update the status badge in the DOM
-      this.updateStatusBadge(field, value)
-      // Show success message
-      this.showSuccessMessage(`${field} updated successfully!`)
-      // Reset button state
-      buttonTarget.innerHTML = originalContent
-    })
-    .catch(error => {
-      console.error(`Error updating ${field}:`, error)
-      // Reset button state
-      buttonTarget.innerHTML = originalContent
-      this.showErrorMessage(`Failed to update ${field}. Please try again.`)
-    })
-    
-    // Close dropdowns
+    // Set the value of the hidden input
+    this.statusInputTarget.value = status
+    // Submit the form (Turbo will handle the request/response)
+    this.statusFormTarget.requestSubmit()
+    // Optionally, close the dropdown
     this.closeAll()
   }
 

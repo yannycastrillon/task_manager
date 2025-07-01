@@ -38,8 +38,24 @@ class CleaningAssignment < ApplicationRecord
 
   # Callbacks
   before_validation :set_default_values
+  before_update :set_started_and_completed_times
 
   accepts_nested_attributes_for :recurring_assignment, allow_destroy: true
+
+
+  def real_time_spent_human
+    return nil unless started_at && completed_at
+
+    seconds = completed_at - started_at
+    minutes = (seconds / 60).to_i
+    hours = minutes / 60
+    mins = minutes % 60
+    if hours > 0
+      "#{hours}h #{mins}m"
+    else
+      "#{mins}m"
+    end
+  end
 
   private
 
@@ -50,14 +66,25 @@ class CleaningAssignment < ApplicationRecord
     self.metadata ||= { number_of_floors: nil, number_of_windows: nil, special_instructions: nil }
   end
 
+  def set_started_and_completed_times
+    if status_changed?
+      if status == IN_PROGRESS && started_at.nil?
+        self.started_at = Time.zone.now
+      end
+      if status == COMPLETED && completed_at.nil?
+        self.completed_at = Time.zone.now
+      end
+    end
+  end
+
   # Class methods
-  def self.assignments_days(date = Date.current)
+  def self.assignments_days(date = Time.zone.today)
     CleaningAssignment.includes(:business, :team)
                       .where(scheduled_date: date.all_day)
                       .order(scheduled_date: :asc)
   end
 
-  def self.current_week_assignments(date = Date.current, start_of_week = date.beginning_of_week, end_of_week = date.end_of_week)
+  def self.current_week_assignments(date = Time.zone.today, start_of_week = date.beginning_of_week, end_of_week = date.end_of_week)
     today = date
     tomorrow = today + 1.day
     CleaningAssignment.includes(:business, :team)

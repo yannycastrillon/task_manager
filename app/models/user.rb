@@ -6,7 +6,7 @@ class User < ApplicationRecord
   # devise :database_authenticatable, :registerable,
   #        :recoverable, :rememberable, :validatable
 
-  has_many :cleaning_assignments, foreign_key: :assigned_to_id, inverse_of: :assigned_to
+  has_many :cleaning_assignments, foreign_key: :assigned_to_id, inverse_of: :assigned_to, dependent: :nullify
   has_many :sessions, dependent: :destroy
   has_many :team_memberships, dependent: :destroy
   has_many :teams, through: :team_memberships

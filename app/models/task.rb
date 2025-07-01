@@ -11,7 +11,7 @@ class Task < ApplicationRecord
   has_many :businesses, through: :cleaning_assignments
   has_many :teams, through: :cleaning_assignments
   # has_many :assigned_tos, through: :cleaning_assignments, class_name: "User", source: :assigned_to
-  has_many :cleaning_assignment_tasks
+  has_many :cleaning_assignment_tasks, dependent: :destroy
   has_many :cleaning_assignments, through: :cleaning_assignment_tasks
 
   # Enums

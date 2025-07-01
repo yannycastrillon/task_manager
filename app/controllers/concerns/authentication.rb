@@ -34,7 +34,7 @@ module Authentication
 
       respond_to do |format|
         format.html { redirect_to new_session_path }
-        format.json { render json: { error: 'Unauthorized' }, status: :unauthorized }
+        format.json { render json: { error: "Unauthorized" }, status: :unauthorized }
       end
     end
 

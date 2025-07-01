@@ -1,0 +1,49 @@
+<div data-controller="status-update" id="cleaning-assignments-quick-actions" class="flex flex-col sm:flex-row gap-4 mb-8 p-4 bg-gray-700/30 rounded-xl border border-gray-600/50">
+  <%# Left side - Edit button and badges %>
+  <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 flex-1">
+    <%= link_to edit_cleaning_assignment_path(cleaning_assignment), class: "flex items-center space-x-2 px-3 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors text-sm text-gray-300 w-full sm:w-auto justify-center sm:justify-start" do %>
+      <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+      </svg>
+      <span>Edit Assignment</span>
+    <% end %>
+
+    <%# Status and Priority Badges Container %>
+    <div class="flex flex-col sm:flex-row gap-2 sm:gap-2 w-full sm:w-auto">
+      <%# Status Badge %>
+      <div data-status-update-target="statusBadge" class="flex justify-center sm:justify-start">
+        <%= cleaning_assignment_status_badge_component(cleaning_assignment.status) %>
+      </div>
+    </div>
+  </div>
+
+  <%# Right side - Status Update Dropdown %>
+  <div class="relative w-full sm:w-auto">
+    <button type="button" data-action="click->status-update#toggle" data-status-update-target="statusButton"
+      class="flex items-center justify-center space-x-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 focus:bg-purple-700 rounded-lg transition-all duration-200 text-sm text-white w-full sm:w-auto shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-800">
+      <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+      </svg>
+      <span>Update Status</span>
+      <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m6 9 6 6 6-6"/>
+      </svg>
+    </button>
+
+    <div data-status-update-target="statusDropdown" class="absolute right-0 mt-2 w-full sm:w-48 bg-gray-800 border border-gray-600 rounded-lg shadow-lg z-10 hidden">
+      <% valid_next_statuses[cleaning_assignment.status].each do |status| %>
+        <button type="button"
+          data-action="click->status-update#updateStatus"
+          data-status="<%= status %>"
+          class="w-full text-left px-4 py-3 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
+          <%= status.titleize %>
+        </button>
+      <% end %>
+    </div>
+    <!-- Hidden form for status update -->
+    <%= form_with model: cleaning_assignment, url: cleaning_assignment_path(cleaning_assignment), method: :patch, data: { status_update_target: "statusForm" }, html: { style: "display:none;" } do |f| %>
+      <%= f.hidden_field :status, value: cleaning_assignment.status, data: { status_update_target: "statusInput" } %>
+    <% end %>
+  </div>
+</div> 
