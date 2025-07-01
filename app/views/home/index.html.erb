@@ -26,7 +26,6 @@
       <h2 class="text-lg sm:text-xl md:text-2xl font-bold text-white mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <span>Today's Jobs (<%= @today_cleaning_assignments.count %>)</span>
         <span class="text-gray-400 text-xs sm:text-sm md:text-base font-semibold ml-0 sm:ml-4 whitespace-nowrap"><%= @today.strftime('%a %d, %Y') %></span>
-        <%= link_to "View All", cleaning_assignments_path(date: @today.to_s), class: "text-xs sm:text-sm md:text-base text-red-400 hover:text-red-300 font-semibold transition-colors ml-0 sm:ml-4" if @today_cleaning_assignments.any? %>
       </h2>
       <% if @today_cleaning_assignments.any? %>
         <div class="flex flex-col gap-6">
@@ -44,7 +43,6 @@
       <h2 class="text-lg sm:text-xl md:text-2xl font-bold text-white mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <span>Tomorrow's Jobs (<%= @tomorrow_cleaning_assignments.count %>)</span>
         <span class="text-gray-400 text-xs sm:text-sm md:text-base font-semibold ml-0 sm:ml-4 whitespace-nowrap"><%= (@today + 1.day).strftime('%a %d, %Y') %></span>
-        <%= link_to "View All", cleaning_assignments_path(date: (@today + 1.day).to_s), class: "text-xs sm:text-sm md:text-base text-red-400 hover:text-red-300 font-semibold transition-colors ml-0 sm:ml-4" if @tomorrow_cleaning_assignments.any? %>
       </h2>
       <% if @tomorrow_cleaning_assignments.any? %>
         <div class="flex flex-col gap-6">
@@ -62,7 +60,6 @@
       <h2 class="text-lg sm:text-xl md:text-2xl font-bold text-white mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <span>Current Week's Jobs (<%= @current_week_cleaning_assignments.count %>)</span>
         <span class="text-gray-400 text-xs sm:text-sm md:text-base font-semibold ml-0 sm:ml-4 whitespace-nowrap">Week <%= @today.strftime('%V') %></span>
-        <%= link_to "View All", cleaning_assignments_path(start_date: @start_of_week.to_s, end_date: @end_of_week.to_s), class: "text-xs sm:text-sm md:text-base text-red-400 hover:text-red-300 font-semibold transition-colors ml-0 sm:ml-4" if @current_week_cleaning_assignments.any? %>
       </h2>
       <% if @current_week_cleaning_assignments.any? %>
         <div class="flex flex-col gap-6">

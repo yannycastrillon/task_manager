@@ -37,7 +37,7 @@
       <%= form.label :team_id, "Team*",class: "block text-base font-medium text-gray-300 mb-2" %>
       <div class="mt-1">
         <%= form.collection_select :team_id, Team.all, :id, :name, 
-            { prompt: "Select a team" }, 
+            { prompt: "Select a team" },
             { class: "block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base py-3 px-4" } %>
       </div>
     </div>
@@ -85,26 +85,53 @@
             class: "block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base py-3 px-4 min-h-[120px]" %>
       </div>
     </div>
-
-    <%= form.fields_for :recurring_assignment do |ra_form| %>
-      <div class="space-y-4 bg-gray-700/50 p-4 rounded-xl border border-gray-600">
-        <%= ra_form.label :is_recurring, class: "block text-base font-medium text-gray-300 mb-2" %>
-        <div class="flex items-center mb-2">
-          <%= ra_form.check_box :is_recurring, class: "h-5 w-5 rounded border-gray-600 bg-gray-700 text-blue-600 focus:ring-blue-500" %>
-          <span class="ml-2 text-gray-400">Is this a recurring assignment?</span>
+    <!-- Recurring Assignment Section -->
+    <div class="space-y-6 bg-gray-700/40 p-4 sm:p-6 rounded-xl border border-gray-600 mt-8" data-controller="recurring-toggle">
+      <h3 class="text-lg font-semibold text-white mb-2 flex items-center">
+        <svg class="w-5 h-5 mr-2 text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        Recurring Assignment
+      </h3>
+      <% if cleaning_assignment.recurring_assignment&.expiration_warning_message.present? %>
+        <div class="mb-4 p-4 rounded-lg bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800">
+          <%= cleaning_assignment.recurring_assignment.expiration_warning_message %>
         </div>
-        <%= ra_form.label :recurrence_pattern, class: "block text-base font-medium text-gray-300 mb-2" %>
-        <%= ra_form.select :recurrence_pattern, RecurringAssignment::RECURRENCE_PATTERNS.map { |p| [p.titleize, p] }, { prompt: "Select recurrence pattern" }, class: "block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base py-3 px-4" %>
-        <%= ra_form.label :recurrence_interval, class: "block text-base font-medium text-gray-300 mb-2" %>
-        <%= ra_form.number_field :recurrence_interval, class: "block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base py-3 px-4" %>
-        <%= ra_form.label :recurrence_end_date, class: "block text-base font-medium text-gray-300 mb-2" %>
-        <%= ra_form.date_field :recurrence_end_date, class: "block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base py-3 px-4" %>
-        <div class="flex items-center mt-2">
-          <%= ra_form.check_box :is_active, class: "h-5 w-5 rounded border-gray-600 bg-gray-700 text-blue-600 focus:ring-blue-500" %>
-          <span class="ml-2 text-gray-400">Active</span>
+      <% end %>
+      <p class="text-gray-400 text-sm mb-4">Set this assignment to repeat automatically on a schedule.</p>
+      <%= form.fields_for :recurring_assignment do |ra_form| %>
+        <div class="flex flex-col gap-4">
+          <div>
+            <div class="flex items-center mb-2">
+              <%= ra_form.check_box :is_recurring, class: "h-5 w-5 rounded border-gray-600 bg-gray-700 text-blue-600 focus:ring-blue-500" , data: { action: "recurring-toggle#toggle" } %>
+              <span class="ml-2 text-gray-400">Is recurring?</span>
+            </div>
+            <p class="text-xs text-gray-500">Check to make this assignment repeat.</p>
+          </div>
         </div>
-      </div>
-    <% end %>
+        <div data-recurring-toggle-target="recurringFields" style="display: <%= ra_form.object.is_recurring ? '' : 'none' %>;">
+          <div class="flex flex-col gap-4 mt-4 sm:grid sm:grid-cols-2 sm:gap-6">
+            <div>
+              <%= ra_form.label :recurrence_pattern, class: "block text-base font-medium text-gray-300 mb-2" %>
+              <%= ra_form.select :recurrence_pattern, RecurringAssignment::RECURRENCE_PATTERNS.map { |p| [p.titleize, p] }, { prompt: "Select recurrence pattern" }, class: "block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base py-3 px-4" %>
+              <p class="text-xs text-gray-500 mt-1">How often should this assignment repeat?</p>
+            </div>
+            <div>
+              <%= ra_form.label :recurrence_interval, class: "block text-base font-medium text-gray-300 mb-2" %>
+              <%= ra_form.number_field :recurrence_interval, min: 1, class: "block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base py-3 px-4" %>
+              <p class="text-xs text-gray-500 mt-1">Interval between recurrences (e.g., every 2 weeks).</p>
+            </div>
+            <div>
+              <%= ra_form.label :recurrence_end_date, class: "block text-base font-medium text-gray-300 mb-2" %>
+              <%= ra_form.date_field :recurrence_end_date, class: "block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base py-3 px-4" %>
+              <p class="text-xs text-gray-500 mt-1">Date when recurring assignments should stop.</p>
+            </div>
+            <div class="flex items-center mt-2">
+              <%= ra_form.check_box :is_active, class: "h-5 w-5 rounded border-gray-600 bg-gray-700 text-blue-600 focus:ring-blue-500" %>
+              <span class="ml-2 text-gray-400">Active (enable/disable this recurring schedule)</span>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
   </div>
 
   <div class="pt-8">

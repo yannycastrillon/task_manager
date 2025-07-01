@@ -15,6 +15,7 @@ class CleaningAssignment < ApplicationRecord
   belongs_to :team
   belongs_to :business
   belongs_to :recurring_assignment, optional: true
+  accepts_nested_attributes_for :recurring_assignment, allow_destroy: true
   belongs_to :assigned_to, class_name: "User", optional: true
   has_many :cleaning_assignment_tasks, dependent: :destroy
   has_many :tasks, through: :cleaning_assignment_tasks
@@ -39,6 +40,7 @@ class CleaningAssignment < ApplicationRecord
   # Callbacks
   before_validation :set_default_values
   before_update :set_started_and_completed_times
+  after_update :create_next_recurring_assignment, if: :should_create_next_recurring_assignment?
 
   accepts_nested_attributes_for :recurring_assignment, allow_destroy: true
 
@@ -50,11 +52,17 @@ class CleaningAssignment < ApplicationRecord
     minutes = (seconds / 60).to_i
     hours = minutes / 60
     mins = minutes % 60
-    if hours > 0
-      "#{hours}h #{mins}m"
-    else
-      "#{mins}m"
-    end
+
+    hours.positive? ? "#{hours}h #{mins}m" : "#{mins}m"
+  end
+
+  def create_next_recurring_assignment
+    return unless recurring_assignment
+
+    next_date = recurring_assignment.next_scheduled_date(scheduled_date || Time.zone.today)
+    return unless next_date
+
+    CleaningAssignment.create!(duplication_attributes_for_next(next_date))
   end
 
   private
@@ -67,14 +75,22 @@ class CleaningAssignment < ApplicationRecord
   end
 
   def set_started_and_completed_times
-    if status_changed?
-      if status == IN_PROGRESS && started_at.nil?
-        self.started_at = Time.zone.now
-      end
-      if status == COMPLETED && completed_at.nil?
-        self.completed_at = Time.zone.now
-      end
-    end
+    return unless status_changed?
+
+    time_now = Time.zone.now
+    self.started_at = time_now if status == IN_PROGRESS && started_at.nil?
+    self.completed_at = time_now if status == COMPLETED && completed_at.nil?
+  end
+
+  def should_create_next_recurring_assignment?
+    saved_change_to_status? && status == COMPLETED &&
+      recurring_assignment&.is_recurring? && recurring_assignment&.is_active?
+  end
+
+  def duplication_attributes_for_next(next_date)
+    attributes.symbolize_keys
+              .except(:id, :created_at, :updated_at, :status, :started_at, :completed_at)
+              .merge(status: SCHEDULED, scheduled_date: next_date, recurring_assignment_id: recurring_assignment.id)
   end
 
   # Class methods

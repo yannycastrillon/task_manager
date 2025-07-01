@@ -15,10 +15,12 @@ class CleaningAssignmentsController < ApplicationController
   # GET /cleaning_assignments/new
   def new
     @cleaning_assignment = CleaningAssignment.new
+    @cleaning_assignment.build_recurring_assignment
   end
 
   # GET /cleaning_assignments/1/edit
   def edit
+    @cleaning_assignment.build_recurring_assignment if @cleaning_assignment.recurring_assignment.nil?
     @tasks = @cleaning_assignment.tasks
   end
 
@@ -73,7 +75,10 @@ class CleaningAssignmentsController < ApplicationController
       permitted = params.require(:cleaning_assignment).permit(
         :notes, :started_at, :completed_at, :scheduled_date, :total_estimated_duration_minutes,
         :actual_duration_minutes, :status, :priority, :team_id, :business_id, :assigned_to_id,
-        :recurring_assignment_id, task_ids: []
+        :recurring_assignment_id, task_ids: [],
+        recurring_assignment_attributes: [
+          :id, :is_recurring, :recurrence_pattern, :recurrence_interval, :recurrence_end_date, :is_active, :_destroy
+        ]
       )
       if permitted[:scheduled_date].present?
         permitted[:scheduled_date] = Time.zone.parse(permitted[:scheduled_date])
