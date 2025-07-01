@@ -103,6 +103,32 @@
               </svg>
               Cleaning Assignments
             <% end %>
+
+            <%# Mobile Auth Links (same layout as nav links) %>
+            <hr class="my-2 border-gray-700">
+            <% if authenticated? && Current.user %>
+              <div class="flex flex-col gap-1 px-4 py-2">
+                <div class="flex items-center text-gray-300 font-semibold text-sm mb-1">
+                  <svg class="w-5 h-5 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  Hi! <%= Current.user.first_name %>
+                </div>
+                <%= button_to session_path, method: :delete, class: "flex items-center px-0 py-2 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition-colors duration-200 w-full text-left" do %>
+                  <svg class="w-5 h-5 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7" />
+                  </svg>
+                  Sign out
+                <% end %>
+              </div>
+            <% else %>
+              <%= link_to new_session_path, class: "flex items-center px-4 py-3 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition-colors duration-200 w-full text-left" do %>
+                <svg class="w-5 h-5 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+                Sign in
+              <% end %>
+            <% end %>
           </nav>
 
           <%# Mobile Menu Footer %>

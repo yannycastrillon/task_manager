@@ -4,7 +4,7 @@
     <span class="hidden lg:inline">Dashboard</span>
     <span class="lg:hidden">Dashboard</span>
   <% end %>
-  
+
   <%= link_to businesses_path, class: "text-gray-300 hover:text-white px-2 py-2 lg:px-3 rounded-md text-sm font-medium transition-colors duration-200 hover:bg-gray-800" do %>
     <span class="hidden lg:inline">Businesses</span>
     <span class="lg:hidden">Businesses</span>
@@ -23,12 +23,16 @@
   <%# Future menu items can be added here %>
   <%# <%= link_to "Categories", categories_path, class: "text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" %>
   
-  <%# User authentication links (commented out for now) %>
-  <%# if user_signed_in? %>
-    <%# link_to "Profile", edit_user_registration_path, class: "text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" %>
-    <%# button_to "Sign out", destroy_user_session_path, method: :delete, class: "text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" %>
-  <%# else %>
-    <%# link_to "Sign in", new_user_session_path, class: "text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" %>
-    <%# link_to "Sign up", new_user_registration_path, class: "text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" %>
-  <%# end %>
+  <%# User authentication links %>
+  <div class="ml-auto flex items-center">
+    <div class="h-6 border-l border-gray-700 mx-4"></div>
+    <% if authenticated? && Current.user %>
+      <%= link_to root_path, class: "text-gray-300 font-semibold text-sm px-2 py-2 rounded min-h-[44px] flex items-center hover:text-white hover:bg-gray-800 transition-colors duration-200", title: "Go to Dashboard" do %>
+        Hi! <%= Current.user.first_name %>
+      <% end %>
+      <%= button_to "Sign out", session_path, method: :delete, class: "text-gray-300 hover:text-white px-2 py-2 rounded-md text-sm font-medium transition-colors duration-200 hover:bg-gray-800 ml-2 min-h-[44px] flex items-center" %>
+    <% else %>
+      <%= link_to "Sign in", new_session_path, class: "text-gray-300 hover:text-white px-2 py-2 rounded-md text-sm font-medium transition-colors duration-200 hover:bg-gray-800 ml-2 min-h-[44px] flex items-center" %>
+    <% end %>
+  </div>
 </nav>

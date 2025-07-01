@@ -1,6 +1,4 @@
 class HomeController < ApplicationController
-  allow_unauthenticated_access
-
   def index
     assignment_service = CleaningAssignmentService.new(today: Date.current)
 
