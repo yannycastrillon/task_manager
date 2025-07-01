@@ -48,7 +48,7 @@ module TeamsHelper
     when CleaningAssignment::IN_PROGRESS
       [ "amber", CleaningAssignment::IN_PROGRESS.titleize ]
     when CleaningAssignment::COMPLETED
-      [ "emerald", CleaningAssignment::COMPLETED.titleize ]
+      [ "green", CleaningAssignment::COMPLETED.titleize ]
     when CleaningAssignment::CANCELLED
       [ "red", CleaningAssignment::CANCELLED.titleize ]
     else
@@ -56,7 +56,7 @@ module TeamsHelper
     end
 
     content_tag(:span, class: "inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-#{color}-500/20 text-#{color}-400 border border-#{color}-500/30") do
-      content_tag(:div, "", class: "w-2 h-2 bg-#{color}-400 rounded-full mr-2 flex-shrink-0") + text
+      content_tag(:div, "", class: "w-2 h-2 bg-#{color}-400 rounded-full mr-2 animate-pulse") + text
     end
   end
 
@@ -75,7 +75,7 @@ module TeamsHelper
     end
 
     content_tag(:span, class: "inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-#{color}-500/20 text-#{color}-400 border border-#{color}-500/30") do
-      content_tag(:div, "", class: "w-2 h-2 bg-#{color}-400 rounded-full mr-2 flex-shrink-0") + text
+      content_tag(:div, "", class: "w-2 h-2 bg-#{color}-400 rounded-full mr-2  animate-pulse") + text
     end
   end
 end
