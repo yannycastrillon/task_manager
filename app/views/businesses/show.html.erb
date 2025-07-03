@@ -65,7 +65,28 @@
             </div>
             <div class="flex-1 min-w-0">
               <h3 class="font-medium text-white mb-1 text-sm sm:text-base">Address</h3>
-              <p class="text-gray-300 leading-relaxed break-words text-xs sm:text-sm"><%= @business.address %></p>
+              <div class="flex items-center gap-2 relative" data-controller="copy">
+                <p data-copy-target="source" class="text-gray-300 leading-relaxed break-words text-xs sm:text-sm">
+                  <%= @business.address.present? ? @business.address : "Not provided" %>
+                </p>
+                <% if @business.address.present? %>
+                  <button
+                    type="button"
+                    data-action="click->copy#copy"
+                    class="ml-1 px-2 py-1 rounded bg-gray-700 text-gray-200 hover:bg-blue-600 hover:text-white text-xs transition-colors cursor-pointer"
+                    title="Copy address"
+                  >
+                    Copy
+                  </button>
+                  <span
+                    data-copy-target="tooltip"
+                    class="ml-2 px-2 py-1 rounded bg-black text-white text-xs hidden absolute z-10"
+                    style="top: -2rem; left: 0;"
+                  >
+                    Copied!
+                  </span>
+                <% end %>
+              </div>
             </div>
           </div>
 
@@ -78,7 +99,7 @@
             <div class="flex-1">
               <h3 class="font-medium text-white mb-1">Phone</h3>
               <a href="tel:<%= @business.phone %>" class="text-gray-300 hover:text-white transition-colors">
-                <%= @business.phone %>
+                <%= @business.phone.present? ? @business.phone : "Not provided" %>
               </a>
             </div>
           </div>
@@ -93,7 +114,7 @@
             <div class="flex-1 min-w-0">
               <h3 class="font-medium text-white mb-1">Email</h3>
               <a href="mailto:<%= @business.email %>" class="text-gray-300 hover:text-white transition-colors break-all">
-                <%= @business.email %>
+                <%= @business.email.present? ? @business.email : "Not provided" %>
               </a>
             </div>
           </div>
@@ -142,7 +163,12 @@
               <h3 class="font-semibold text-white mb-1">In Progress</h3>
               <p class="text-gray-400 text-sm mb-3">Active assignments</p>
               <div class="w-full bg-gray-600 rounded-full h-2">
-                <div class="bg-red-600 h-2 rounded-full" style="width: <%= (@active_assignments.count.to_f / @total_assignments * 100).round %>%"></div>
+                <% if @total_assignments > 0 %>
+                  <div class="bg-red-600 h-2 rounded-full" style="width: <%= (@active_assignments.count.to_f / @total_assignments * 100).round %>%"></div>
+                <% else %>
+                  <div class="bg-red-600 h-2 rounded-full" style="width: 0%"></div>
+                  <span class="text-gray-400 text-xs">No assignments</span>
+                <% end %>
               </div>
             </div>
 
@@ -162,7 +188,12 @@
               <h3 class="font-semibold text-white mb-1">Completed</h3>
               <p class="text-gray-400 text-sm mb-3">Finished assignments</p>
               <div class="w-full bg-gray-600 rounded-full h-2">
-                <div class="bg-green-600 h-2 rounded-full" style="width: <%= (@completed_assignments.count.to_f / @total_assignments * 100).round %>%"></div>
+                <% if @total_assignments > 0 %>
+                  <div class="bg-green-600 h-2 rounded-full" style="width: <%= (@completed_assignments.count.to_f / @total_assignments * 100).round %>%"></div>
+                <% else %>
+                  <div class="bg-green-600 h-2 rounded-full" style="width: 0%"></div>
+                  <span class="text-gray-400 text-xs">No assignments</span>
+                <% end %>
               </div>
             </div>
 
@@ -184,7 +215,12 @@
               <h3 class="font-semibold text-white mb-1">Scheduled</h3>
               <p class="text-gray-400 text-sm mb-3">Future assignments</p>
               <div class="w-full bg-gray-600 rounded-full h-2">
-                <div class="bg-blue-600 h-2 rounded-full" style="width: <%= (@scheduled_assignments.count.to_f / @total_assignments * 100).round %>%"></div>
+                <% if @total_assignments > 0 %>
+                  <div class="bg-blue-600 h-2 rounded-full" style="width: <%= (@scheduled_assignments.count.to_f / @total_assignments * 100).round %>%"></div>
+                <% else %>
+                  <div class="bg-blue-600 h-2 rounded-full" style="width: 0%"></div>
+                  <span class="text-gray-400 text-xs">No assignments</span>
+                <% end %>
               </div>
             </div>
           </div>
@@ -199,8 +235,8 @@
             </svg>
             <span>Edit Business</span>
           <% end %>
-          
-          <%= button_to @business, method: :delete, class: "flex-1 bg-gray-700 hover:bg-red-600 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 flex items-center justify-center space-x-3 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 border border-gray-600 hover:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-800", data: { turbo_confirm: "Are you sure you want to delete this business? This action cannot be undone." } do %>
+
+          <%= button_to @business, method: :delete, class: "flex-1 bg-gray-700 hover:bg-red-600 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 flex items-center justify-center space-x-3 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 border border-gray-600 hover:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-800", data: { turbo: false, confirm: "Are you sure you want to delete this business? This action cannot be undone." } do %>
             <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="3 6 5 6 21 6"></polyline>
               <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
