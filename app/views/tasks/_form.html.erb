@@ -41,7 +41,7 @@
       <%= form.select :location, Task.locations.keys.map { |l| [l.titleize, l] }, { prompt: "Select location" }, class: "block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base py-3 px-4" %>
     </div>
     <div>
-      <%= form.label :estimated_duration, class: "block text-base font-medium text-gray-300 mb-2" %>
+      <%= form.label "Estimated Duration (minutes)", class: "block text-base font-medium text-gray-300 mb-2" %>
       <%= form.number_field :estimated_duration, class: "block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring-blue-500 text-base py-3 px-4" %>
     </div>
   </div>
