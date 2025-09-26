@@ -49,7 +49,7 @@ group :development, :test do
   gem "factory_bot_rails", "~> 6.4"
   gem "guard", "~> 2.18"
   gem "guard-rspec", "~> 4.7"
-  gem "rubocop", "~> 1.75", require: false
+  gem "rubocop", "~> 1.81", require: false
   gem "rubocop-rails", "~> 2.32", require: false
   gem "pry", "~>0.15"
   gem "pry-byebug", "~> 3.11"
