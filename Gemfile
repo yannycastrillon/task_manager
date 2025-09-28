@@ -48,7 +48,7 @@ gem "cancancan", "~> 3.5"
 # gem "image_processing", "~> 1.2"
 
 group :development, :test do
-  gem "rspec-rails", "~> 7.1.1"
+  gem "rspec-rails", "~> 8.0.2"
   gem "factory_bot_rails", "~> 6.4"
   gem "guard", "~> 2.18"
   gem "guard-rspec", "~> 4.7"
