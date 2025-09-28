@@ -49,7 +49,7 @@ gem "cancancan", "~> 3.5"
 
 group :development, :test do
   gem "rspec-rails", "~> 7.1.1"
-  gem "factory_bot_rails", "~> 6.4"
+  gem "factory_bot_rails", "~> 6.5"
   gem "guard", "~> 2.18"
   gem "guard-rspec", "~> 4.7"
   gem "rubocop", "~> 1.75", require: false
