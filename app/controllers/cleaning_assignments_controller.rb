@@ -1,5 +1,6 @@
 class CleaningAssignmentsController < ApplicationController
   before_action :set_cleaning_assignment, only: %i[ show edit update destroy ]
+  authorize_resource
 
   # GET /cleaning_assignments or /cleaning_assignments.json
   def index

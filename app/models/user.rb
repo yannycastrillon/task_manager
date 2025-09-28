@@ -20,4 +20,21 @@ class User < ApplicationRecord
   def full_name
     "#{first_name} #{last_name}"
   end
+
+  # Role helper methods for CanCanCan
+  def admin?
+    role == "admin"
+  end
+
+  def manager?
+    role == "manager"
+  end
+
+  def cleaner?
+    role == "cleaner"
+  end
+
+  def user?
+    role == "user"
+  end
 end

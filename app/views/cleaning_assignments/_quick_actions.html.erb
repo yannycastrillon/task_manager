@@ -1,12 +1,15 @@
 <div data-controller="status-update" id="cleaning-assignments-quick-actions" class="flex flex-col sm:flex-row gap-4 mb-8 p-4 bg-gray-700/30 rounded-xl border border-gray-600/50">
   <%# Left side - Edit button and badges %>
   <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 flex-1">
-    <%= link_to edit_cleaning_assignment_path(cleaning_assignment), class: "flex items-center space-x-2 px-3 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors text-sm text-gray-300 w-full sm:w-auto justify-center sm:justify-start" do %>
-      <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-      </svg>
-      <span>Edit Assignment</span>
+    <%# Edit button - Only show if user can update this cleaning assignment %>
+    <% if can_update?(cleaning_assignment) %>
+      <%= link_to edit_cleaning_assignment_path(cleaning_assignment), class: "flex items-center space-x-2 px-3 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors text-sm text-gray-300 w-full sm:w-auto justify-center sm:justify-start" do %>
+        <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+        </svg>
+        <span>Edit Assignment</span>
+      <% end %>
     <% end %>
 
     <%# Status and Priority Badges Container %>

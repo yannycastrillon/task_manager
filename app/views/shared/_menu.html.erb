@@ -1,23 +1,35 @@
 <%# Desktop Navigation menu items - Hidden on mobile, shown on md+ screens %>
 <nav class="hidden md:flex items-center space-x-2 lg:space-x-4">
-  <%= link_to root_path, class: "text-gray-300 hover:text-white px-2 py-2 lg:px-3 rounded-md text-sm font-medium transition-colors duration-200 hover:bg-gray-800" do %>
-    <span class="hidden lg:inline">Dashboard</span>
-    <span class="lg:hidden">Dashboard</span>
+  <%# Dashboard - Always visible for authenticated users %>
+  <% if authenticated? %>
+    <%= link_to root_path, class: "text-gray-300 hover:text-white px-2 py-2 lg:px-3 rounded-md text-sm font-medium transition-colors duration-200 hover:bg-gray-800" do %>
+      <span class="hidden lg:inline">Dashboard</span>
+      <span class="lg:hidden">Dashboard</span>
+    <% end %>
   <% end %>
 
-  <%= link_to businesses_path, class: "text-gray-300 hover:text-white px-2 py-2 lg:px-3 rounded-md text-sm font-medium transition-colors duration-200 hover:bg-gray-800" do %>
-    <span class="hidden lg:inline">Businesses</span>
-    <span class="lg:hidden">Businesses</span>
+  <%# Businesses - Only visible to admin and manager (not cleaners) %>
+  <% if can?(:read, Business) && !Current.user&.cleaner? %>
+    <%= link_to businesses_path, class: "text-gray-300 hover:text-white px-2 py-2 lg:px-3 rounded-md text-sm font-medium transition-colors duration-200 hover:bg-gray-800", data: { admin_only: !Current.user&.admin? } do %>
+      <span class="hidden lg:inline">Businesses</span>
+      <span class="lg:hidden">Businesses</span>
+    <% end %>
   <% end %>
   
-  <%= link_to teams_path, class: "text-gray-300 hover:text-white px-2 py-2 lg:px-3 rounded-md text-sm font-medium transition-colors duration-200 hover:bg-gray-800" do %>
-    <span class="hidden lg:inline">Teams</span>
-    <span class="lg:hidden">Teams</span>
+  <%# Teams - Only visible to admin and manager (not cleaners) %>
+  <% if can?(:read, Team) && !Current.user&.cleaner? %>
+    <%= link_to teams_path, class: "text-gray-300 hover:text-white px-2 py-2 lg:px-3 rounded-md text-sm font-medium transition-colors duration-200 hover:bg-gray-800", data: { admin_only: !Current.user&.admin? } do %>
+      <span class="hidden lg:inline">Teams</span>
+      <span class="lg:hidden">Teams</span>
+    <% end %>
   <% end %>
   
-  <%= link_to cleaning_assignments_path, class: "text-gray-300 hover:text-white px-2 py-2 lg:px-3 rounded-md text-sm font-medium transition-colors duration-200 hover:bg-gray-800" do %>
-    <span class="hidden lg:inline">Cleaning Assignments</span>
-    <span class="lg:hidden">Cleaning Assignments</span>
+  <%# Cleaning Assignments - Visible to all authenticated users (including cleaners for read-only access) %>
+  <% if can? :read, CleaningAssignment && !Current.user&.cleaner? %>
+    <%= link_to cleaning_assignments_path, class: "text-gray-300 hover:text-white px-2 py-2 lg:px-3 rounded-md text-sm font-medium transition-colors duration-200 hover:bg-gray-800" do %>
+      <span class="hidden lg:inline">Cleaning Assignments</span>
+      <span class="lg:hidden">Cleaning Assignments</span>
+    <% end %>
   <% end %>
   
   <%# Future menu items can be added here %>

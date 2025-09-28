@@ -41,6 +41,9 @@ gem "thruster", require: false
 
 gem "rack-mini-profiler", "~> 4.0"
 
+# Authorization
+gem "cancancan", "~> 3.5"
+
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
 

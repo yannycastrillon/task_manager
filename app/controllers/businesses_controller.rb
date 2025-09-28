@@ -1,5 +1,6 @@
 class BusinessesController < ApplicationController
   before_action :set_business, only: %i[ show edit update destroy ]
+  authorize_resource
 
   # GET /businesses or /businesses.json
   def index

@@ -46,13 +46,44 @@ Rails.logger.info "Creating default users..." do
     Rails.logger.info "Created user already exists: #{user.email}"
   end
 
-  users = [ admin, user ]
+  # Create additional test users for role testing
+  manager = User.find_or_initialize_by(email: "manager@test.com") do |user|
+    user.password = "password123"
+    user.password_confirmation = "password123"
+    user.first_name = "Manager"
+    user.last_name = "Test"
+    user.phone = Faker::PhoneNumber.phone_number
+    user.role = "manager"
+  end
+  if manager.new_record?
+    manager.save!
+    Rails.logger.info "Manager user created: #{manager.email}"
+  else
+    Rails.logger.info "Manager user already exists: #{manager.email}"
+  end
+
+  cleaner = User.find_or_initialize_by(email: "cleaner@test.com") do |user|
+    user.password = "password123"
+    user.password_confirmation = "password123"
+    user.first_name = "Cleaner"
+    user.last_name = "Test"
+    user.phone = Faker::PhoneNumber.phone_number
+    user.role = "cleaner"
+  end
+  if cleaner.new_record?
+    cleaner.save!
+    Rails.logger.info "Cleaner user created: #{cleaner.email}"
+  else
+    Rails.logger.info "Cleaner user already exists: #{cleaner.email}"
+  end
+
+  users = [ admin, user, manager, cleaner ]
 end
 
 # === TEAMS ===
 teams = []
 Rails.logger.info "Creating teams..." do
-  [ "Windowshine", "Houseshine" ].each do |name|
+  [ "Windowshine" ].each do |name|
     team = Team.find_or_initialize_by(name: name) do |team|
       team.description = "#{name} is a team of window cleaners for commercial and house properties"
       team.status = "active"
@@ -72,8 +103,9 @@ end
 team_memberships = []
 Rails.logger.info "Creating team memberships..." do
   admin = users.first
+  team = teams.first
   users.each_with_index do |u, i|
-    team_membership = TeamMembership.find_or_initialize_by(user: u, team: teams[i]) do |membership|
+    team_membership = TeamMembership.find_or_initialize_by(user: u, team: team) do |membership|
       membership.role = u == admin ? "team_lead" : "member"
       membership.status = "active"
       membership.start_date = Date.current
@@ -82,9 +114,9 @@ Rails.logger.info "Creating team memberships..." do
 
     if team_membership.new_record?
       team_membership.save!
-      Rails.logger.info "Team membership created for user: #{u.email} in team: #{teams[i].name}"
+      Rails.logger.info "Team membership created for user: #{u.email} in team: #{team.name}"
     else
-      Rails.logger.info "Team membership already exists for user: #{u.email} in team: #{teams[i].name}"
+      Rails.logger.info "Team membership already exists for user: #{u.email} in team: #{team.name}"
     end
 
     team_memberships << team_membership

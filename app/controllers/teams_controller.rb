@@ -1,6 +1,7 @@
 class TeamsController < ApplicationController
   before_action :set_team, only: %i[ show edit update destroy members ]
   before_action :set_users, only: %i[ new edit create update ]
+  authorize_resource
 
   # GET /teams or /teams.json
   def index
