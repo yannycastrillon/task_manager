@@ -14,13 +14,13 @@ class Ability
     elsif user.manager?
       can :manage, [ Business, Team, Task, CleaningAssignment ]
       can :read, User
-    # Cleaner users can view and update their own assignments
+    # Cleaner users can view and update their own assignments only
     elsif user.cleaner?
-      can :read, [ CleaningAssignment, Task ]
+      can :read, CleaningAssignment
       can :update, CleaningAssignment, assigned_to_id: user.id
     # Regular users have minimal access
     elsif user.user?
-      can :read, [ Business, Team, Task ]
+      can :read, [ Business, Team ]
       can :read, CleaningAssignment, assigned_to_id: user.id
     end
   end
